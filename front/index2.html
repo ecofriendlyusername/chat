@@ -1,0 +1,31 @@
+<!-- document.addEventListener("DOMContentLoaded", () => {
+    fetchData();
+});
+
+const fetchData = async () => {
+    try {
+        const response = await fetch("your-backend-url"); // Replace with your backend API URL
+        const data = await response.json();
+
+        const dataDiv = document.querySelector("#data");
+        dataDiv.textContent = JSON.stringify(data, null, 2);
+    } catch (error) {
+        console.error("Error fetching data:", error);
+    }
+}; -->
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Fetch Data on Page Load</title>
+</head>
+<body>
+    <button id="myButton">Click me</button>
+    
+    <div id="channels"></div>
+<script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
+    <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
+<script src="/app2.js"></script>
+</body>
+</html>
