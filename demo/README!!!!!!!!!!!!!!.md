@@ -1,13 +1,12 @@
 
 --- 2023.08.21 기준 개발된 기능 테스트해보기(시간있으시면 하시고 없으면 금요일에 같이해봐요) ---
-
+&nbsp;
 
 <img width="170" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/af210d39-248f-4496-afcd-a13962b9bb39">
 &nbsp; 
-
+&nbsp;
 <img width="464" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/3cd591f0-06bd-49ff-9f59-a73eaf99c07d">
 &nbsp;
-
 subscribe to channels를 클릭합니다
 (클릭시 메인채널과 유저가 속한 채팅방들의 채팅방들을 가져옵니다.)
 메인채널은 채팅방 초대 등에만 쓰이는 채널(?) 이라고 보시면 됩니다. 메인채널, 채팅방들 모두 destination이 있어요
