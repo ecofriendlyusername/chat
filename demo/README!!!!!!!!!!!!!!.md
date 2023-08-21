@@ -3,7 +3,7 @@
 &nbsp;
 
 <img width="170" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/af210d39-248f-4496-afcd-a13962b9bb39">
-&nbsp; 
+<br>
 click here먼저 클릭해주세요
 <br>
 <img width="464" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/3cd591f0-06bd-49ff-9f59-a73eaf99c07d">
