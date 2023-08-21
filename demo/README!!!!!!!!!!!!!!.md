@@ -8,6 +8,7 @@ click here먼저 클릭해주세요
 <br>
 <img width="464" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/3cd591f0-06bd-49ff-9f59-a73eaf99c07d">
 <br>
+<br>
 subscribe to channels를 클릭합니다
 (클릭시 메인채널과 유저가 속한 채팅방들의 채팅방들을 가져옵니다.)
 메인채널은 채팅방 초대 등에만 쓰이는 채널(?) 이라고 보시면 됩니다. 메인채널, 채팅방들 모두 destination이 있어요
