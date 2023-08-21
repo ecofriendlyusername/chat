@@ -1,7 +1,5 @@
 package com.example.demo.dto;
 
-import com.example.demo.entity.Member;
-import jakarta.persistence.*;
 import lombok.*;
 
 import java.util.List;
@@ -15,10 +13,13 @@ public class ChatRoomResponseDto {
 
     private String destination;
 
+    private String roomName;
+
     @Builder
-    ChatRoomResponseDto(Long id, String destination, List<String> memberEmails) {
+    ChatRoomResponseDto(Long id, String destination, String roomName, List<String> memberEmails) {
         this.id = id;
         this.destination = destination;
+        this.roomName = roomName;
         this.memberEmails = memberEmails;
     }
 }

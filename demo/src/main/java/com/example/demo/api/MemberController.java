@@ -12,7 +12,6 @@ import java.util.Map;
 @RestController
 @RequestMapping("/user")
 public class MemberController {
-
     @GetMapping("/")
     public Map<String, Object> user(@AuthenticationPrincipal OAuth2User principal) {
         String email = principal.getAttribute("email");

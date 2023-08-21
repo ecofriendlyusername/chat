@@ -24,9 +24,6 @@ public class WebSocketChatEventListener {
         GenericMessage message = (GenericMessage) event.getMessage();
         String simpDestination = (String) message.getHeaders().get("simpDestination");
 
-//        if (simpDestination.startsWith("/topic/group/1")) {
-//            // do stuff
-//        }
         System.out.println("subscribe event occured : " + simpDestination);
     }
 

@@ -1,55 +1,40 @@
-const channels = [];
+const baseurl = "http://localhost:8081"
+
+
+var chatrooms = [];
+var mainchannel = null;
+
 document.getElementById("myButton").addEventListener("click", connect, true)
+document.getElementById("invitationButton").addEventListener("click", makeAChatRoom, true)
 
 var name = null;
 async function connect(event) {
-    // name = document.querySelector('#name').value.trim();
-    // if (name) {
-    //     document.querySelector('#welcome-page').classList.add('hidden');
-    //     document.querySelector('#dialogue-page').classList.remove('hidden');
-    //     stompClient.activate();
-    // }
     await fetchData();
-    // event.preventDefault();
 }
-
-// document.addEventListener("DOMContentLoaded", () => {
-    
-//     stompClient.activate();
-// });
-
 const fetchData = async () => {
     try {
-        const response = await fetch("http://localhost:8081/mainchannel/getmainchannel", {
+        const userchatroomsResponse = await fetch("http://localhost:8081/chatrooms/alluserchatrooms", {
             method: 'GET',
             credentials: 'include'
-         })
-        //  const response = await fetch("http://localhost:8081/chatrooms/alluserchatrooms", {
-        //     method: "GET", // *GET, POST, PUT, DELETE, etc.
-        //     // mode: "cors", // no-cors, *cors, same-origin
-        //     credentials: "include", // include, *same-origin, omit
-        //     headers: {
-        //       "Content-Type": "application/json",
-        //     }
-        //   });
-          print(response)
-         const data = await response.json() // await!!
-         channels.push(data[0])
-         console.log(channels.length + ' !!')
-         console.log(data[0], channels[0], ' questionable')
-         stompClient.activate();
-        //  .error(error => {
-        //     console.log(error)
-        //     return error
-        //  }); 
-         // Replace with your backend API URL
-       //  const data = await response.json();
-        // const dataDiv = document.querySelector("#data");
-        // dataDiv.textContent = JSON.stringify(data, null, 2);
-        // console.log(data[0]['destination'])
-        // console.log(data[0]['memberEmails'][0])
-        // console.log(data[0]['id'])
-        return response
+        })
+        const mainchatroomResponse = await fetch("http://localhost:8081/mainchannel/getmainchannel", {
+            method: 'GET',
+            credentials: 'include'
+        })
+        const userchatrooms = await userchatroomsResponse.json() // await!!
+        if (userchatrooms !== undefined) {
+            console.log(userchatrooms)
+            userchatrooms.forEach((userChatRoom) => {
+                chatrooms.push(userChatRoom)
+            })
+            console.log(chatrooms.length + ' !!')
+            console.log(userchatrooms[0], chatrooms[0], ' questionable')
+        } else {
+            console.log('defined but.. ?')
+        }
+        mainchannel = await mainchatroomResponse.json()
+        
+        stompClient.activate();
     } catch (error) {
         console.error("Error fetching data:", error);
         return error
@@ -64,51 +49,67 @@ const stompClient = new StompJs.Client({
 stompClient.onConnect = (frame) => {
     // setConnected(true);
     console.log('Connected: ' + frame);
-    console.log(channels.length)
-    channels.forEach((channel) => {
-        destination = channel['destination']
-
-        var inputElement = document.createElement("input");
-        inputElement.type = "text";
-        inputElement.placeholder = "Enter text";
-        inputElement.id = destination + '-input'
-
-        // Create the <button> element
-        var buttonElement = document.createElement("button");
-        buttonElement.id = destination + '-button'
-        buttonElement.textContent = "Click me";
-
-        // Create the <div> element
-
-        const textBox = document.createElement("div");
-        textBox.id = destination + '-textBox';
-
-        const channelDiv = document.createElement("div");
-        channelDiv.id = destination
-
-        channelDiv.appendChild(inputElement);
-        channelDiv.appendChild(buttonElement);
-        channelDiv.appendChild(textBox);
-
-        document.querySelector("#channels").appendChild(channelDiv);
-
-        document.getElementById(buttonElement.id).addEventListener('click', function() {
-            sendMessage(inputElement.id, destination)
-        })
-        
-
+    console.log(chatrooms.length)
+    chatrooms.forEach((channel) => {
+        const destination = channel['destination']
+        console.log(destination)
+        openNewChatRoom(destination)
+    });
+    if (mainchannel === null) {
+        console.log('main channel is missing!!!!!')
+    } else {
+        var destination = mainchannel['destination']
+        console.log(destination)
         stompClient.subscribe('/topic/'+destination, (message) => {
             const messageBody = JSON.parse(message.body); // Assuming the message is in JSON format
-            const realMessage = console.log(messageBody['content'])
-            displayMessage(textBox.id, messageBody['content']);
+            const type = messageBody['type']
+            if (type === 'INVITATION') {
+                console.log('received invitation!')
+                const destination = messageBody['destination']
+                openNewChatRoom(destination)
+            } else {
+                console.log('this is not an invitation!!!')
+            }
+            // displayMessage(textBox.id, messageBody['content']);
         });
-    });
-    // stompClient.subscribe('/topic/x', onMessageReceived);
-    // stompClient.publish({
-    //     destination: "/app/chat.newUser",
-    //     body: JSON.stringify({sender: name, type: 'newUser'})
-    // });
+    }
 };
+
+function makeAChatRoom() {
+    const invitation1 = document.getElementById("invitation1").value;
+    const invitation2 = document.getElementById("invitation2").value;
+
+    var invitees = []
+
+    if (invitation1.length >= 3) invitees.push(invitation1);
+    if (invitation2.length >= 3) invitees.push(invitation2);
+
+    const roomName = document.getElementById("roomName").value;
+
+    // roomName;invitees;
+    const roomRequest = {
+        'invitees' : invitees,
+        'roomName' : roomName
+    }
+
+    console.log('roomRequest ',roomRequest)
+
+    fetch(baseurl + "/chatrooms/makechatroom", {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(roomRequest)
+    })
+    .then(json)
+    .then(function (data) {
+        console.log('Request succeeded with JSON response', data);
+    })
+    .catch(function (error) {
+        console.log('Request failed', error);
+    });
+}
 
 function sendMessage(inputBoxId, destination) {
     var messageContent = document.getElementById(inputBoxId).value.trim();
@@ -127,21 +128,47 @@ function sendMessage(inputBoxId, destination) {
 }
 
 const displayMessage = (textBoxId, message) => {
+    console.log('trying to display message!!!!')
     const textBox = document.getElementById(textBoxId);
     const messageDiv = document.createElement("div");
     messageDiv.textContent = message;
     textBox.appendChild(messageDiv);
 };
 
-// stompClient.connect({}, () => {
-//     channels.forEach(channel => {
-//         const channelDiv = document.createElement("div");
-//         channelDiv.id = channel;
-//         document.querySelector("#channels").appendChild(channelDiv);
-        
-//         stompClient.subscribe('/topic/'+channel['destination'], message => {
-//             const messageBody = JSON.parse(message.body); // Assuming the message is in JSON format
-//             displayMessage(channel, messageBody.message);
-//         });
-//     });
-// });
+function openNewChatRoom(destination) { // open a new chat room (subscribe & receive messages)
+    console.log('opening new chat room')
+    var inputElement = document.createElement("input");
+    inputElement.type = "text";
+    inputElement.placeholder = "Enter text";
+    inputElement.id = destination + '-input'
+
+    // Create the <button> element
+    var buttonElement = document.createElement("button");
+    buttonElement.id = destination + '-button'
+    buttonElement.textContent = "Click me";
+    
+    // Create the <div> element
+    const textBox = document.createElement("div");
+    textBox.id = destination + '-textBox';
+
+    const channelDiv = document.createElement("div");
+    channelDiv.id = destination
+
+    channelDiv.appendChild(inputElement);
+    channelDiv.appendChild(buttonElement);
+    channelDiv.appendChild(textBox);
+
+    document.querySelector("#chatrooms").appendChild(channelDiv);
+    document.getElementById(buttonElement.id).addEventListener("click",function() {
+        sendMessage(inputElement.id, destination);
+    });
+    document.querySelector("#chatrooms").appendChild(channelDiv);
+
+    console.log('subscribing...')
+
+    stompClient.subscribe('/topic/'+destination, (message) => {
+        const messageBody = JSON.parse(message.body); // Assuming the message is in JSON format
+        console.log(messageBody['content'])
+        displayMessage(textBox.id, messageBody['content']);
+    });
+}

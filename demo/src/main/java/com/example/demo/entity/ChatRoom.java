@@ -20,11 +20,13 @@ public class ChatRoom {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Member> members;
 
+    private String roomName;
     private String destination;
 
     @Builder
-    ChatRoom(String destination, List<Member> members) {
+    ChatRoom(String destination, List<Member> members, String roomName) {
         this.members = members;
         this.destination = destination;
+        this.roomName = roomName;
     }
 }

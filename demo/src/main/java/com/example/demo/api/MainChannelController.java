@@ -2,8 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.application.ChatRoomService;
 import com.example.demo.application.MainChannelService;
-import com.example.demo.dto.ChatRoomResponseDto;
-import com.example.demo.entity.MainChannel;
+import com.example.demo.dto.MainChannelDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -23,9 +22,14 @@ public class MainChannelController {
     private final MainChannelService mainchannelService;
 
     @GetMapping("/getmainchannel")
-    public ResponseEntity<MainChannel> getMainChannel(@AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<MainChannelDto> getMainChannel(@AuthenticationPrincipal OAuth2User principal) {
         String email = principal.getAttribute("email");
-        MainChannel mainChannel = mainchannelService.fetchMainChannel(email);
-        return new ResponseEntity<>(mainChannel, HttpStatus.OK);
+        MainChannelDto mainChannelDto = mainchannelService.fetchMainChannel(email);
+        if (mainChannelDto == null) {
+            System.out.println("mainChannelDto null");
+        } else {
+            System.out.println(mainChannelDto.getMemberEmail() + "'s channel destination : " + mainChannelDto.getDestination());
+        }
+        return new ResponseEntity<>(mainChannelDto, HttpStatus.OK);
     }
 }

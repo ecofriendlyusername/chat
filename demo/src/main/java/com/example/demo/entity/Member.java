@@ -21,7 +21,7 @@ public class Member {
 
     @OneToOne(fetch = FetchType.LAZY)
     private MainChannel mainChannel;
-
+    //mappedBy = "table"
     @ManyToMany(fetch = FetchType.LAZY)
     private List<ChatRoom> chatRooms;
 

@@ -5,7 +5,6 @@ import com.example.demo.application.MainChannelService;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Primary;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
@@ -21,7 +20,6 @@ import java.util.Map;
 @RequiredArgsConstructor
 public class CustomUserService extends OidcUserService {
     private final MemberRepository memberRepository;
-    private final ChatRoomService chatRoomService;
     private final MainChannelService mainChannelService;
 
     @Override

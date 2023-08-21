@@ -1,18 +1,3 @@
-<!-- document.addEventListener("DOMContentLoaded", () => {
-    fetchData();
-});
-
-const fetchData = async () => {
-    try {
-        const response = await fetch("your-backend-url"); // Replace with your backend API URL
-        const data = await response.json();
-
-        const dataDiv = document.querySelector("#data");
-        dataDiv.textContent = JSON.stringify(data, null, 2);
-    } catch (error) {
-        console.error("Error fetching data:", error);
-    }
-}; -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -21,9 +6,14 @@ const fetchData = async () => {
     <title>Fetch Data on Page Load</title>
 </head>
 <body>
-    <button id="myButton">Click me</button>
-    
-    <div id="channels"></div>
+    <button id="myButton">Subscribe to Channels</button>
+    <div>
+        <input type="text" id="roomName" name="roomName" />
+        <input type="text" id="invitation1" name="invitation1" />
+        <input type="text" id="invitation2" name="invitation2" />
+        <button id="invitationButton">Subscribe to MainChannel</button>
+    </div>
+    <div id="chatrooms"></div>
 <script src="https://cdn.jsdelivr.net/npm/@stomp/stompjs@7.0.0/bundles/stomp.umd.min.js"></script>
     <script src="https://code.jquery.com/jquery-3.1.1.min.js"></script>
 <script src="/app2.js"></script>

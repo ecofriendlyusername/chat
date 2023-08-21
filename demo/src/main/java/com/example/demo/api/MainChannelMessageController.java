@@ -12,11 +12,11 @@ import org.springframework.stereotype.Controller;
 
 @Controller
 @RequiredArgsConstructor
-public class ChatController {
+public class MainChannelMessageController {
     private final SimpMessageSendingOperations messagingTemplate;
 
-    @MessageMapping("/chat/{destination}")
-    public void sendMessage(@Payload ChatMessage webSocketChatMessage, Authentication authentication, @DestinationVariable String destination) {
+    @MessageMapping("/mainchannelmessage/{destination}")
+    public void sendMainChannelMessage(@Payload ChatMessage webSocketChatMessage, Authentication authentication, @DestinationVariable String destination) {
         DefaultOidcUser defaultOidcUser = (DefaultOidcUser) authentication.getPrincipal();
 
         System.out.println("logged in user email : " + defaultOidcUser.getEmail());
