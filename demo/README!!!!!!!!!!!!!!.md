@@ -4,7 +4,7 @@
 
 <img width="170" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/af210d39-248f-4496-afcd-a13962b9bb39">
 &nbsp; 
-&nbsp;
+..
 <img width="464" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/3cd591f0-06bd-49ff-9f59-a73eaf99c07d">
 &nbsp;
 subscribe to channels를 클릭합니다
