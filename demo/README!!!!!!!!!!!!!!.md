@@ -16,6 +16,7 @@ subscribe to channels를 클릭합니다
 &nbsp;
 <img width="638" alt="image" src="https://github.com/ecofriendlyusername/chat/assets/46067895/6d158f4c-2abe-4599-859e-44ddf3ea383f">
 &nbsp;
+<br>
 이제 채팅방을 만드는데 첫번째 박스는 채팅방 이름, 두번째, 세번째 박스는 이메일 넣는 칸입니다<br>
 저는 프론트가 아니니까 대충 하드코딩 해서 두개만 넣었는데 프론트쪽에서 이메일 여러개 넣을 수 있게 만드시면 되겠죠<br>
 그리고 Subscribe to MainChannel버튼을 누릅니다 버튼에 있는 텍스트는 무시하세요!!! 관련 없음 
