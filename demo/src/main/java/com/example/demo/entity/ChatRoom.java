@@ -20,6 +20,9 @@ public class ChatRoom {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<Member> members;
 
+    @OneToMany(mappedBy = "chatroom", fetch = FetchType.LAZY)
+    private List<ChatMessage> chatMessages;
+
     private String roomName;
     private String destination;
 

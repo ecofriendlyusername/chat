@@ -1,6 +1,9 @@
 package com.example.demo.api;
 
-import com.example.demo.dto.ChatMessage;
+import com.example.demo.dto.ChatMessageDto;
+import com.example.demo.entity.ChatMessage;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
@@ -16,7 +19,7 @@ public class MainChannelMessageController {
     private final SimpMessageSendingOperations messagingTemplate;
 
     @MessageMapping("/mainchannelmessage/{destination}")
-    public void sendMainChannelMessage(@Payload ChatMessage webSocketChatMessage, Authentication authentication, @DestinationVariable String destination) {
+    public void sendMainChannelMessage(@Payload ChatMessageDto webSocketChatMessage, Authentication authentication, @DestinationVariable String destination) {
         DefaultOidcUser defaultOidcUser = (DefaultOidcUser) authentication.getPrincipal();
 
         System.out.println("logged in user email : " + defaultOidcUser.getEmail());

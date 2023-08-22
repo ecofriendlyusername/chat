@@ -1,6 +1,6 @@
 package com.example.demo.listener;
 
-import com.example.demo.dto.ChatMessage;
+import com.example.demo.dto.ChatMessageDto;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.event.EventListener;
 import org.springframework.messaging.simp.SimpMessageSendingOperations;
@@ -29,13 +29,13 @@ public class WebSocketChatEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-        String username = (String) headerAccessor.getSessionAttributes().get("username");
-        if(username != null) {
-            ChatMessage chatMessage = new ChatMessage();
-            chatMessage.setType("Leave");
-            chatMessage.setSender(username);
-            messagingTemplate.convertAndSend("/topic/public", chatMessage);
-        }
+//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
+//        String username = (String) headerAccessor.getSessionAttributes().get("username");
+//        if (username != null) {
+//            ChatMessageDto chatMessage = new ChatMessageDto();
+//            chatMessage.setType("Leave");
+//            chatMessage.setSender(username);
+//            messagingTemplate.convertAndSend("/topic/public", chatMessage);
+//        }
     }
 }

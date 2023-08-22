@@ -25,8 +25,8 @@ public class Member {
     @ManyToMany(fetch = FetchType.LAZY)
     private List<ChatRoom> chatRooms;
 
-    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-    private List<ChatLine> chatLines;
+//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
+//    private List<ChatMessage> chatMessages;
 
     private String name;
 

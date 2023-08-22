@@ -102,7 +102,6 @@ function makeAChatRoom() {
         },
         body: JSON.stringify(roomRequest)
     })
-    .then(json)
     .then(function (data) {
         console.log('Request succeeded with JSON response', data);
     })
@@ -127,12 +126,93 @@ function sendMessage(inputBoxId, destination) {
     }
 }
 
-const displayMessage = (textBoxId, message) => {
-    console.log('trying to display message!!!!')
-    const textBox = document.getElementById(textBoxId);
-    const messageDiv = document.createElement("div");
-    messageDiv.textContent = message;
-    textBox.appendChild(messageDiv);
+async function sendFile(formData, destination, type) {
+    fetch(baseurl + '/chatmessages/uploadfile', {
+        method: 'POST',
+        credentials: 'include',
+        body: formData
+    })
+    .then(response => response.text())
+    .then(data => {
+        const fileName = data;
+
+        console.log(fileName)
+        
+        if (stompClient) {
+            var chatMessage = {
+                content : fileName,
+                type : type
+        };
+        stompClient.publish({
+            destination: "/app/chat/" + destination,
+            body: JSON.stringify(chatMessage)
+        });
+    }
+    })
+    .catch(error => {
+        console.error('Error fetching string:', error);
+    });
+
+}
+
+
+const displayMessage = (textBoxId, messageBody) => {
+    if (messageBody['type'] === 'IMAGE') {
+        const fileName = messageBody['content']
+        fetch(baseurl + '/chatmessages/getfile/' + fileName, {
+            method: 'get',
+            credentials: 'include',
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const reader = new FileReader();
+            reader.onload = () => {
+                const imgElement = document.createElement('img');
+                imgElement.src = reader.result;
+                const textBox = document.getElementById(textBoxId);
+                textBox.appendChild(imgElement);
+            };
+            reader.readAsDataURL(blob);
+        })
+        .catch(error => console.error('Error loading image:', error));
+    } else if (messageBody['type'] === 'FILE') {
+        const fileName = messageBody['content']
+        fetch(baseurl + '/chatmessages/getfile/' + fileName, {
+            method: 'get',
+            credentials: 'include',
+        })
+        .then(response => response.blob())
+        .then(blob => {
+            const downloadButton = document.createElement("button");
+            downloadButton.id = fileName + 'downloadbutton'
+            downloadButton.textContent = "Download File";
+
+            const textBox = document.getElementById(textBoxId);
+
+            textBox.appendChild(downloadButton);
+            
+            downloadButton.addEventListener('click', () => {
+                const url = window.URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.id = fileName + 'download'
+                a.href = url;
+                a.style.display = 'none';
+                a.download = fileName;
+                textBox.appendChild(a);
+                a.click();
+                textBox.removeChild(a);
+                window.URL.revokeObjectURL(url);
+            });
+        })
+        .catch(error => console.error('Error loading image:', error));
+    } else {
+        const message = messageBody['content']
+        console.log('trying to display message!!!!')
+        const textBox = document.getElementById(textBoxId);
+        const messageDiv = document.createElement("div");
+        messageDiv.textContent = message;
+        textBox.appendChild(messageDiv);
+    }
 };
 
 function openNewChatRoom(destination) { // open a new chat room (subscribe & receive messages)
@@ -142,12 +222,14 @@ function openNewChatRoom(destination) { // open a new chat room (subscribe & rec
     inputElement.placeholder = "Enter text";
     inputElement.id = destination + '-input'
 
-    // Create the <button> element
+    var fileInputElement = document.createElement("input");
+    fileInputElement.type = "file";
+    fileInputElement.id = destination + '-file-input'
+
     var buttonElement = document.createElement("button");
     buttonElement.id = destination + '-button'
     buttonElement.textContent = "Click me";
-    
-    // Create the <div> element
+
     const textBox = document.createElement("div");
     textBox.id = destination + '-textBox';
 
@@ -156,19 +238,29 @@ function openNewChatRoom(destination) { // open a new chat room (subscribe & rec
 
     channelDiv.appendChild(inputElement);
     channelDiv.appendChild(buttonElement);
+    channelDiv.appendChild(fileInputElement);
     channelDiv.appendChild(textBox);
 
     document.querySelector("#chatrooms").appendChild(channelDiv);
+    document.getElementById(fileInputElement.id).addEventListener("change",function(event) {
+        const selectedFile = event.target.files[0];
+
+        const formData = new FormData();
+        formData.append('attachment', selectedFile);
+        
+        if (selectedFile.type.startsWith('image/')) {
+            sendFile(formData, destination, 'IMAGE');
+        } else {
+            sendFile(formData, destination, 'FILE');
+        }
+    });
     document.getElementById(buttonElement.id).addEventListener("click",function() {
         sendMessage(inputElement.id, destination);
     });
-    document.querySelector("#chatrooms").appendChild(channelDiv);
-
-    console.log('subscribing...')
 
     stompClient.subscribe('/topic/'+destination, (message) => {
         const messageBody = JSON.parse(message.body); // Assuming the message is in JSON format
         console.log(messageBody['content'])
-        displayMessage(textBox.id, messageBody['content']);
+        displayMessage(textBox.id, messageBody);
     });
 }
