@@ -11,9 +11,11 @@ import lombok.Setter;
 public class MainChannelMessage {
     private String type; // change to ENUM later
     private String destination;
+    private Long chatRoomId;
     @Builder
-    MainChannelMessage(String type, String destination) {
+    MainChannelMessage(String type, String destination, Long chatRoomId) {
         this.type = type;
         this.destination = destination;
+        this.chatRoomId = chatRoomId;
     }
 }

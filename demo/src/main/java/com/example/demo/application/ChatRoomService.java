@@ -1,5 +1,6 @@
 package com.example.demo.application;
 
+import com.example.demo.dto.ChatRoomInvitationDto;
 import com.example.demo.dto.ChatRoomRequestDto;
 import com.example.demo.dto.ChatRoomResponseDto;
 import com.example.demo.entity.ChatRoom;
@@ -11,6 +12,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.Random;
 
 @Service
@@ -20,8 +22,7 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
 
-    public String makeAChatRoom(ChatRoomRequestDto chatRoomRequestDto, String roomMakerEmail) {
-        // random string
+    public ChatRoom makeAChatRoom(ChatRoomRequestDto chatRoomRequestDto, String roomMakerEmail) {
         String destination = generateRandomString(20);
 
         ChatRoom chatRoom = ChatRoom.builder()
@@ -30,25 +31,14 @@ public class ChatRoomService {
                 .build();
 
         List<String> invitees = chatRoomRequestDto.getInvitees();
+
         invitees.add(roomMakerEmail);
 
         List<Member> members = new ArrayList<>();
 
-        for (String memberEmail : invitees) {
-            Member member = memberRepository.findByEmail(memberEmail);
-            if (member == null) continue;
-            List<ChatRoom> chatRooms = member.getChatRooms();
-            chatRooms.add(chatRoom);
-            members.add(member);
-            chatRoomRepository.save(chatRoom); // before : TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: com.example.demo.entity.ChatRoom
-            memberRepository.save(member);
-        }
+        addMembersHelper(chatRoom, members, invitees);
 
-        chatRoom.setMembers(members);
-
-        chatRoomRepository.save(chatRoom);
-
-        return destination;
+        return chatRoom;
     }
 
     private static String generateRandomString(int length) {
@@ -95,5 +85,40 @@ public class ChatRoomService {
                 .id(chatRoom.getId())
                 .build();
         return itemMatchResponsePageDto;
+    }
+
+    public ChatRoom isInChatRoom(ChatRoomInvitationDto chatRoomInvitationDto, String email) {
+        Optional<ChatRoom> chatRoomOptional = chatRoomRepository.findById(chatRoomInvitationDto.getChatRoomId());
+        if (chatRoomOptional.isEmpty()) return null;
+        ChatRoom chatRoom = chatRoomOptional.get();
+        List<Member> members = chatRoom.getMembers();
+        for (Member member : members) {
+            if (member.getEmail().equals(email)) return chatRoom;
+        }
+        return null;
+    }
+
+    public void addMembers(ChatRoom chatRoom, ChatRoomInvitationDto chatRoomInvitationDto) {
+        addMembersHelper(chatRoom, chatRoom.getMembers(), chatRoomInvitationDto.getInvitees());
+    }
+
+    private void addMembersHelper(ChatRoom chatRoom, List<Member> members, List<String> invitees) {
+        for (String memberEmail : invitees) {
+            Member member = memberRepository.findByEmail(memberEmail);
+            if (member == null) continue;
+            List<ChatRoom> chatRooms = member.getChatRooms();
+            chatRooms.add(chatRoom);
+            members.add(member);
+            chatRoomRepository.save(chatRoom); // before : TransientObjectException: object references an unsaved transient instance - save the transient instance before flushing: com.example.demo.entity.ChatRoom
+            memberRepository.save(member);
+        }
+
+        chatRoom.setMembers(members);
+
+        chatRoomRepository.save(chatRoom);
+    }
+
+    public ChatRoomResponseDto fetchAllChatOneRoom(String email) {
+        return null;
     }
 }

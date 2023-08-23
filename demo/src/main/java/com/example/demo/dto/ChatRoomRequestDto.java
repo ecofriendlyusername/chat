@@ -10,7 +10,6 @@ import java.util.List;
 @Setter
 public class ChatRoomRequestDto {
     private List<String> invitees;
-
     private String roomName;
 
     @Builder

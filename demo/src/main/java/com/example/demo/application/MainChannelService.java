@@ -1,8 +1,8 @@
 package com.example.demo.application;
 
-import com.example.demo.dto.ChatRoomRequestDto;
 import com.example.demo.dto.MainChannelDto;
 import com.example.demo.dto.MainChannelMessage;
+import com.example.demo.entity.ChatRoom;
 import com.example.demo.entity.MainChannel;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.MainChannelRepository;
@@ -48,16 +48,17 @@ public class MainChannelService {
         memberRepository.save(member);
     }
 
-    public void sendInvitations(ChatRoomRequestDto chatRoomRequestDto, String destination) {
-        List<String> invitees = chatRoomRequestDto.getInvitees();
+    public void sendInvitations(List<String> invitees, ChatRoom chatRoom) {
         List<String> mainChannelDestinations = getMainChannels(invitees);
 
         MainChannelMessage invitation = MainChannelMessage.builder()
                 .type("INVITATION")
-                .destination(destination)
+                .chatRoomId(chatRoom.getId())
+                .destination(chatRoom.getDestination())
                 .build();
 
         for (String mainChannelDestination : mainChannelDestinations) {
+            System.out.println(mainChannelDestination + " !!!!!!!");
             messagingTemplate.convertAndSend("/topic/"+mainChannelDestination, invitation);
         }
     }
