@@ -2,9 +2,9 @@ package com.example.demo.api;
 
 import com.example.demo.application.ChatRoomService;
 import com.example.demo.application.MainChannelService;
-import com.example.demo.dto.ChatRoomInvitationDto;
-import com.example.demo.dto.ChatRoomRequestDto;
-import com.example.demo.dto.ChatRoomResponseDto;
+import com.example.demo.dto.chat.ChatRoomInvitationRequestDto;
+import com.example.demo.dto.chat.ChatRoomRequestDto;
+import com.example.demo.dto.chat.ChatRoomResponseDto;
 import com.example.demo.entity.ChatRoom;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -66,12 +66,12 @@ public class ChatRoomController {
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<String> sendInvitations(@AuthenticationPrincipal OAuth2User principal, @RequestBody ChatRoomInvitationDto chatRoomInvitationDto) {
+    public ResponseEntity<String> sendInvitations(@AuthenticationPrincipal OAuth2User principal, @RequestBody ChatRoomInvitationRequestDto chatRoomInvitationRequestDto) {
         String email = principal.getAttribute("email");
-        ChatRoom chatRoom = chatRoomService.isInChatRoom(chatRoomInvitationDto, email);
+        ChatRoom chatRoom = chatRoomService.isInChatRoom(chatRoomInvitationRequestDto, email);
         if (chatRoom != null) {
-            chatRoomService.addMembers(chatRoom, chatRoomInvitationDto);
-            mainChannelService.sendInvitations(chatRoomInvitationDto.getInvitees(), chatRoom);
+            chatRoomService.addMembers(chatRoom, chatRoomInvitationRequestDto);
+            mainChannelService.sendInvitations(chatRoomInvitationRequestDto.getInvitees(), chatRoom);
             return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
         } else {
             return new ResponseEntity(HttpStatus.UNAUTHORIZED);

@@ -1,13 +1,11 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.NotNull;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
-
-import java.util.ArrayList;
-import java.util.List;
 
 @Entity
 @Getter
@@ -17,27 +15,16 @@ public class Member {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
+    @NotNull
     private String email;
 
-    @OneToOne(fetch = FetchType.LAZY)
-    private MainChannel mainChannel;
-    //mappedBy = "table"
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<ChatRoom> chatRooms;
-
-//    @OneToMany(mappedBy = "member", fetch = FetchType.LAZY)
-//    private List<ChatMessage> chatMessages;
-
+    String mainChannelDestination;
     private String name;
 
     @Builder
-    Member(String email, String name) {
+    Member(String email, String name, String mainChannelDestination) {
         this.email = email;
+        this.mainChannelDestination = mainChannelDestination;
         this.name = name;
-    }
-
-    public void addChatRoom(ChatRoom chatRoom) {
-        if (this.chatRooms == null) this.chatRooms = new ArrayList<>();
-        this.chatRooms.add(chatRoom);
     }
 }

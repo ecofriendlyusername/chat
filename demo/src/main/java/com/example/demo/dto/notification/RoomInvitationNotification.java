@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.notification;
 
 import lombok.Builder;
 import lombok.Getter;
@@ -8,12 +8,12 @@ import lombok.Setter;
 @Getter
 @Setter
 @NoArgsConstructor // jackson
-public class MainChannelMessage {
+public class RoomInvitationNotification implements StompMessage {
     private String type; // change to ENUM later
     private String destination;
     private Long chatRoomId;
     @Builder
-    MainChannelMessage(String type, String destination, Long chatRoomId) {
+    RoomInvitationNotification(String type, String destination, Long chatRoomId) {
         this.type = type;
         this.destination = destination;
         this.chatRoomId = chatRoomId;

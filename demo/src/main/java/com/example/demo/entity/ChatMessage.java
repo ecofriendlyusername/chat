@@ -16,22 +16,19 @@ public class ChatMessage {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
-//    @ManyToOne
-//    private Member member;
     @ManyToOne
-    private ChatRoom chatroom;
+    private ChatRoom chatRoom;
 
     private String sender;
     private String content;
     private String type;
-
     private LocalDateTime timeStamp;
 
 
     @Builder
     ChatMessage(String sender, ChatRoom chatRoom, String content, String type) {
 //        this.member = member;
-        this.chatroom = chatRoom;
+        this.chatRoom = chatRoom;
         this.sender = sender;
         this.content = content;
         this.type = type;

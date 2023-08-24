@@ -2,7 +2,6 @@ package com.example.demo.api;
 
 import com.example.demo.application.ChatRoomService;
 import com.example.demo.application.MainChannelService;
-import com.example.demo.dto.MainChannelDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -26,14 +25,10 @@ public class MainChannelController {
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<MainChannelDto> getMainChannel(@AuthenticationPrincipal OAuth2User principal) {
+    public ResponseEntity<String> getMainChannel(@AuthenticationPrincipal OAuth2User principal) {
         String email = principal.getAttribute("email");
-        MainChannelDto mainChannelDto = mainchannelService.fetchMainChannel(email);
-        if (mainChannelDto == null) {
-            System.out.println("mainChannelDto null");
-        } else {
-            System.out.println(mainChannelDto.getMemberEmail() + "'s channel destination : " + mainChannelDto.getDestination());
-        }
-        return new ResponseEntity<>(mainChannelDto, HttpStatus.OK);
+        String mainChannelDestination = mainchannelService.fetchMainChannelDestination(email);
+
+        return new ResponseEntity<>(mainChannelDestination, HttpStatus.OK);
     }
 }

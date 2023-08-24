@@ -6,6 +6,7 @@ var mainchannel = null;
 
 document.getElementById("myButton").addEventListener("click", connect, true)
 document.getElementById("invitationButton").addEventListener("click", makeAChatRoom, true)
+document.getElementById("friend-request-button").addEventListener("click", makeAFriendRequest, true)
 
 var name = null;
 async function connect(event) {
@@ -17,10 +18,17 @@ const fetchData = async () => {
             method: 'GET',
             credentials: 'include'
         })
-        const mainchatroomResponse = await fetch("http://localhost:8081/mainchannel/getmainchannel", {
+        await fetch("http://localhost:8081/mainchannel/getmainchannel", {
             method: 'GET',
             credentials: 'include'
         })
+        .then(response => response.text())
+        .then(data => {
+            mainchannel = data;
+        })
+        .catch(error => {
+            console.error('Error fetching string:', error);
+        });
         const userchatrooms = await userchatroomsResponse.json() // await!!
         if (userchatrooms !== undefined) {
             console.log(userchatrooms)
@@ -32,7 +40,6 @@ const fetchData = async () => {
         } else {
             console.log('defined but.. ?')
         }
-        mainchannel = await mainchatroomResponse.json()
         
         stompClient.activate();
     } catch (error) {
@@ -58,7 +65,7 @@ stompClient.onConnect = (frame) => {
     if (mainchannel === null) {
         console.log('main channel is missing!!!!!')
     } else {
-        var destination = mainchannel['destination']
+        var destination = mainchannel
         console.log(destination)
         // 메인 채널에 subscribe한다.
         stompClient.subscribe('/topic/'+destination, (message) => {
@@ -75,12 +82,70 @@ stompClient.onConnect = (frame) => {
                 }
                 chatrooms.push(chatroom);
                 openNewChatRoom(chatroom);
+            } else if (type === 'FRIEND_REQUEST') {
+                processFriendRequest(messageBody)
             } else {
                 console.log('this is not an invitation!!!')
             }
         });
     }
 };
+
+function makeAFriendRequest() {
+    const to = document.getElementById("friend-request").value;
+    
+    const friendRequest = {
+        'strangerEmail' : to,
+        'helloMessage': '친구 요청할 때 메시지.. 뭐 테스트용으로 암거나'
+    }
+
+    fetch(baseurl + "/friends/friendrequest", {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(friendRequest)
+    })
+    .then(function (data) {
+        console.log('Request succeeded with JSON response', data);
+    })
+    .catch(function (error) {
+        console.log('Request failed', error);
+    });
+}
+
+function processFriendRequest(friendRequest) {
+    // 여기선 그냥 자동으로 승낙하게 만들어둠 
+    // 프론트에서 누구한테 왔는지 (friendRequest['from']), 인삿말 (friendRequest['helloMessage']) 유저한테 보내고 
+    const from = friendRequest['from']
+    const helloMessage = friendRequest['helloMessage']
+    const friendRequestId = friendRequest['friendRequestId']
+
+    console.log(from)
+    console.log(helloMessage)
+
+    const responseToFriendRequestDto = {
+        friendRequestId,
+        'accept': true
+    }
+
+    fetch(baseurl + "/friends/handleresponsetofriendrequest", {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(responseToFriendRequestDto)
+    })
+    .then(function (data) {
+        console.log('Request succeeded with JSON response', data);
+    })
+    .catch(function (error) {
+        console.log('Request failed', error);
+    });
+
+}
 
 function inviteUsers(inputBoxId1, inputBoxId2, chatroom) {
     const invitation1 = document.getElementById(inputBoxId1).value;

@@ -1,9 +1,6 @@
 package com.example.demo.api;
 
-import com.example.demo.dto.ChatMessageDto;
-import com.example.demo.entity.ChatMessage;
-import io.swagger.v3.oas.annotations.Operation;
-import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import com.example.demo.dto.chat.ChatMessageDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;

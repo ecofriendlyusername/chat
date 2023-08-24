@@ -1,14 +1,14 @@
 package com.example.demo.api;
 
 import com.example.demo.application.ChatMessageService;
-import com.example.demo.dto.ChatMessageDto;
+import com.example.demo.application.StompMessageService;
+import com.example.demo.dto.chat.ChatMessageDto;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
 import org.springframework.messaging.handler.annotation.DestinationVariable;
 import org.springframework.messaging.handler.annotation.MessageMapping;
 import org.springframework.messaging.handler.annotation.Payload;
-import org.springframework.messaging.simp.SimpMessageSendingOperations;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.oauth2.core.oidc.user.DefaultOidcUser;
 import org.springframework.stereotype.Controller;
@@ -16,7 +16,9 @@ import org.springframework.stereotype.Controller;
 @Controller
 @RequiredArgsConstructor
 public class ChatController {
-    private final SimpMessageSendingOperations messagingTemplate;
+
+    private final StompMessageService stompMessageService;
+
     private final ChatMessageService chatMessageService;
 
     @MessageMapping("/chat/{destination}")
@@ -37,6 +39,6 @@ public class ChatController {
 
         chatMessageService.saveMessage(webSocketChatMessage, memberEmail, destination);
 
-        messagingTemplate.convertAndSend("/topic/"+destination, webSocketChatMessage);
+        stompMessageService.sendStompMessage(destination, webSocketChatMessage);
     }
 }

@@ -2,7 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.application.AttachmentService;
 import com.example.demo.application.ChatMessageService;
-import com.example.demo.dto.ChatMessageDto;
+import com.example.demo.dto.chat.ChatMessageDto;
 import com.example.demo.exception.RequestNotAuthorizedException;
 import com.example.demo.exception.WrongMemberEntryException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -24,6 +24,8 @@ import java.util.List;
 public class ChatMessageController { // /chatmessages/getchatmessages/{destination}/{amount}
     private final AttachmentService attachmentService;
     private final ChatMessageService chatMessageService;
+
+    // /chatmessages/getchatmessages/9LrEwwuPdEhbnipLlWBY/3
     @GetMapping("/getchatmessages/{destination}/{amount}")
     @Operation(summary = "(destination)을 destination으로 하는 가장 최근 (amount)메시지를 가져옴", description = "..."
             , responses = {

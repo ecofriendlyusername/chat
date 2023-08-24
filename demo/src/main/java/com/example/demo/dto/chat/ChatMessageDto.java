@@ -1,14 +1,12 @@
-package com.example.demo.dto;
+package com.example.demo.dto.chat;
 
+import com.example.demo.dto.notification.StompMessage;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
-
-import java.util.List;
-
 @Getter
 @Setter
-public class ChatMessageDto {
+public class ChatMessageDto implements StompMessage {
     private Long id;
     private String type;
     private String content;

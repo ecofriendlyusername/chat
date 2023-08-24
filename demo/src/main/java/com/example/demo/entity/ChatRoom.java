@@ -17,18 +17,14 @@ public class ChatRoom {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @ManyToMany(fetch = FetchType.LAZY)
-    private List<Member> members;
-
-    @OneToMany(mappedBy = "chatroom", fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
     private List<ChatMessage> chatMessages;
 
     private String roomName;
     private String destination;
 
     @Builder
-    ChatRoom(String destination, List<Member> members, String roomName) {
-        this.members = members;
+    ChatRoom(String destination, String roomName) {
         this.destination = destination;
         this.roomName = roomName;
     }

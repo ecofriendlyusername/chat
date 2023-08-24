@@ -1,7 +1,5 @@
 package com.example.demo.config;
 
-import com.example.demo.application.ChatRoomService;
-import com.example.demo.application.MainChannelService;
 import com.example.demo.entity.Member;
 import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
@@ -14,13 +12,13 @@ import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.stereotype.Component;
 
 import java.util.Map;
+import java.util.UUID;
 
 @Component
 @Primary
 @RequiredArgsConstructor
-public class CustomUserService extends OidcUserService {
+public class CustomOidcUserService extends OidcUserService {
     private final MemberRepository memberRepository;
-    private final MainChannelService mainChannelService;
 
     @Override
     public OidcUser loadUser(OidcUserRequest userRequest) throws OAuth2AuthenticationException {
@@ -42,15 +40,13 @@ public class CustomUserService extends OidcUserService {
         if (!memberRepository.existsByEmail(email)) {
             member = Member.builder()
                     .name(name)
-                    .email(email).build();
+                    .mainChannelDestination("mc-" + UUID.randomUUID())
+                    .email(email)
+                    .build();
             memberRepository.save(member);
-            mainChannelService.makeAMainChannel(member);
-        } else {
-            member = memberRepository.findByEmail(email);
         }
-
-
 
         return defaultOidcUser;
     }
+
 }
