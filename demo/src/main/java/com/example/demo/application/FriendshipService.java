@@ -3,6 +3,7 @@ package com.example.demo.application;
 import com.example.demo.dto.friend.FriendDto;
 import com.example.demo.dto.friend.FriendRequestDto;
 import com.example.demo.dto.ResponseToFriendRequestDto;
+import com.example.demo.dto.friend.PendingFriendRequestDto;
 import com.example.demo.dto.notification.FriendRequestNotification;
 import com.example.demo.entity.FriendRequest;
 import com.example.demo.entity.Friendship;
@@ -128,5 +129,23 @@ public class FriendshipService {
         .build();
 
         return friendDto;
+    }
+
+    public List<PendingFriendRequestDto> fetchFriendRequests(Member member) {
+        List<FriendRequest> friendRequests = friendRequestRepository.findByTo(member);
+
+        List<PendingFriendRequestDto> pendingFriendRequestDtos = new ArrayList<>();
+
+        for (FriendRequest friendRequest : friendRequests) {
+            Member from = friendRequest.getFrom();
+            if (from == null) continue;
+            PendingFriendRequestDto pendingFriendRequestDto = PendingFriendRequestDto.builder()
+                    .friendRequestId(friendRequest.getId())
+                    .from(from.getEmail())
+                    .helloMessage(friendRequest.getHelloMessage())
+                    .build();
+            pendingFriendRequestDtos.add(pendingFriendRequestDto);
+        }
+        return pendingFriendRequestDtos;
     }
 }

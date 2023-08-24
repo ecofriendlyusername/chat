@@ -62,7 +62,7 @@ public class ChatRoomController {
     }
 
     @PostMapping("/invite/{destination}")
-    @Operation(summary = "이미 존재하는 채팅방에 초대", description = "..."
+    @Operation(summary = "이미 존재하는 채팅방에 초대, invitees에 초대", description = "..."
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })

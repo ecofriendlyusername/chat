@@ -6,6 +6,7 @@ import com.example.demo.application.MemberService;
 import com.example.demo.dto.friend.FriendDto;
 import com.example.demo.dto.friend.FriendRequestDto;
 import com.example.demo.dto.ResponseToFriendRequestDto;
+import com.example.demo.dto.friend.PendingFriendRequestDto;
 import com.example.demo.entity.Member;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.RequestNotAuthorizedException;
@@ -47,6 +48,17 @@ public class FriendsController {
         return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
     }
 
+    @GetMapping("/friendrequests")
+    @Operation(summary = "답을 기다리고 있는 친구요청들 가져오기", description = "웹소켓 커넥션이 열려있는 동안에는 바로 친구요청을 받을 수 있지만 로그아웃 상태였던 때에 받은 친구요청은 DB에 저장되므로 로그인 후 이 친구요청들을 가져오면 됩니다"
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<List<PendingFriendRequestDto>> getFriendRequests(@AuthenticationPrincipal OAuth2User principal) {
+        List<PendingFriendRequestDto> friendRequests = friendshipService.fetchFriendRequests(memberService.getMember(principal));
+
+        return new ResponseEntity<>(friendRequests, HttpStatus.OK);
+    }
+
     // /friends/friends
 
     @GetMapping("/friends")
@@ -63,7 +75,7 @@ public class FriendsController {
 
     // /friends/handleresponsetofriendrequest
     @PostMapping("/handleresponsetofriendrequest")
-    @Operation(summary = "친구 요청에 대한 답변(승낙/거절) 처리", description = "..."
+    @Operation(summary = "친구 요청에 대한 답변(승낙/거절) 처리", description = "승낙이면 accept에 true 거절이면 false"
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })

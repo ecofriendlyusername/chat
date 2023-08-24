@@ -39,14 +39,13 @@ public class ChatMessageService {
         chatMessageRepository.save(chatMessage);
     }
 
-    public List<ChatMessageDto> getLatestChatMessages(String email, String destination, int amount) throws RequestNotAuthorizedException {
+    public List<ChatMessageDto> getLatestChatMessages(Member member, String destination, int amount) throws RequestNotAuthorizedException {
         ChatRoom chatRoom = chatRoomRepository.findByDestination(destination);
-        Member member = memberRepository.findByEmail(email);
 
         if (!memberInChatRoomRepository.existsByMemberAndChatRoom(member, chatRoom)) {
             throw new RequestNotAuthorizedException();
         }
-          // findAllByChatRoomOrderByTimeStampDesc
+
         List<ChatMessage> chatMessages = chatMessageRepository.findAllByChatRoomOrderByTimeStampDesc(chatRoom, PageRequest.of(0, amount));
 
         return convertToChatMessageDtoList(chatMessages);

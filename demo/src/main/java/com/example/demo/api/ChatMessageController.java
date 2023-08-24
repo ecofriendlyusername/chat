@@ -2,6 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.application.AttachmentService;
 import com.example.demo.application.ChatMessageService;
+import com.example.demo.application.MemberService;
 import com.example.demo.dto.chat.ChatMessageDto;
 import com.example.demo.exception.RequestNotAuthorizedException;
 import com.example.demo.exception.WrongMemberEntryException;
@@ -25,6 +26,8 @@ public class ChatMessageController { // /chatmessages/getchatmessages/{destinati
     private final AttachmentService attachmentService;
     private final ChatMessageService chatMessageService;
 
+    private final MemberService memberService;
+
     // /chatmessages/getchatmessages/9LrEwwuPdEhbnipLlWBY/3
     @GetMapping("/getchatmessages/{destination}/{amount}")
     @Operation(summary = "(destination)을 destination으로 하는 가장 최근 (amount)메시지를 가져옴", description = "..."
@@ -32,21 +35,26 @@ public class ChatMessageController { // /chatmessages/getchatmessages/{destinati
             @ApiResponse(responseCode = "200", description = "success")
     })
     public ResponseEntity<List<ChatMessageDto>> getLatestChatMessages(@AuthenticationPrincipal OAuth2User principal, @PathVariable String destination, @PathVariable int amount) throws WrongMemberEntryException, RequestNotAuthorizedException {
-        String email = principal.getAttribute("email");
-        // check if principal is authorized to access messages
-        List<ChatMessageDto> chatMessages = chatMessageService.getLatestChatMessages(email, destination, amount);
+        List<ChatMessageDto> chatMessages = chatMessageService.getLatestChatMessages(memberService.getMember(principal), destination, amount);
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
     }
 // /chatmessages/uploadfile"
     @PostMapping("/uploadfile")
+    @Operation(summary = "파일 업로드", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
     public ResponseEntity<String> uploadAttachmentForChat(@AuthenticationPrincipal OAuth2User principal, @RequestParam("attachment") MultipartFile attachment) {
-        System.out.println("uploading...");
         String fileName = attachmentService.saveAttachment(attachment, principal);
         return ResponseEntity.ok(fileName);
     }
 // /chatmessages/getfile
     @GetMapping("/getfile/{fileName}")
-    public ResponseEntity<FileSystemResource> getAttachmentForChat(@AuthenticationPrincipal OAuth2User principal, @PathVariable String fileName) {
+    @Operation(summary = "파일 이름으로 파일 가져오기", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<FileSystemResource> getAttachmentForChat(@PathVariable String fileName) {
         FileSystemResource fileSystemResource = attachmentService.fetchAttachment(fileName);
 
         return ResponseEntity.ok()

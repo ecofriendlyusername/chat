@@ -1,6 +1,7 @@
 package com.example.demo.api;
 
 import com.example.demo.application.ChatMessageService;
+import com.example.demo.application.MemberService;
 import com.example.demo.application.StompMessageService;
 import com.example.demo.dto.chat.ChatMessageDto;
 import io.swagger.v3.oas.annotations.Operation;
@@ -21,6 +22,7 @@ public class ChatController {
 
     private final ChatMessageService chatMessageService;
 
+
     @MessageMapping("/chat/{destination}")
     @Operation(summary = "채팅방의 모든 메시지들이 오는 엔드포인트", description = "type과 content를 지정 가능. ex) type = chat, content = (보내려는 메시지) "
             , responses = {
@@ -30,10 +32,6 @@ public class ChatController {
         DefaultOidcUser defaultOidcUser = (DefaultOidcUser) authentication.getPrincipal();
         String memberEmail = defaultOidcUser.getEmail();
 
-        System.out.println("logged in user email : " + memberEmail);
-        System.out.println("destination : " + destination);
-
-        System.out.println(webSocketChatMessage.getContent() + " !");
 
         webSocketChatMessage.setSender(memberEmail);
 
