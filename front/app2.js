@@ -216,11 +216,11 @@ function makeAChatRoom() {
     });
 }
 
-function sendMessage(inputBoxId, destination) {
+function sendMessage(inputBoxId, destination, chatRoomId) {
     var messageContent = document.getElementById(inputBoxId).value.trim();
     if (messageContent && stompClient) {
         var chatMessage = {
-            sender : name,
+            chatRoomId: chatRoomId,
             content : document.getElementById(inputBoxId).value,
             type : 'CHAT'
         };
@@ -232,7 +232,7 @@ function sendMessage(inputBoxId, destination) {
     }
 }
 
-async function sendFile(formData, destination, type) {
+async function sendFile(formData, destination, chatRoomId, type) {
     fetch(baseurl + '/chatmessages/uploadfile', {
         method: 'POST',
         credentials: 'include',
@@ -246,6 +246,7 @@ async function sendFile(formData, destination, type) {
         
         if (stompClient) {
             var chatMessage = {
+                chatRoomId: chatRoomId,
                 content : fileName,
                 type : type
         };
@@ -323,6 +324,7 @@ const displayMessage = (textBoxId, messageBody) => {
 
 function openNewChatRoom(chatroom) { // open a new chat room (subscribe & receive messages)
     const destination = chatroom['destination']
+    const chatRoomId = chatroom['id']
     console.log('opening new chat room')
     var inputElement = document.createElement("input");
     inputElement.type = "text";
@@ -399,13 +401,14 @@ function openNewChatRoom(chatroom) { // open a new chat room (subscribe & receiv
         formData.append('attachment', selectedFile);
         
         if (selectedFile.type.startsWith('image/')) {
-            sendFile(formData, destination, 'IMAGE');
+            sendFile(formData, destination, chatRoomId, 'IMAGE');
         } else {
-            sendFile(formData, destination, 'FILE');
+            sendFile(formData, destination, chatRoomId, 'FILE');
         }
     });
+
     document.getElementById(buttonElement.id).addEventListener("click",function() {
-        sendMessage(inputElement.id, destination);
+        sendMessage(inputElement.id, destination, chatRoomId);
     });
 
     const subscription = stompClient.subscribe('/topic/'+destination, (message) => {

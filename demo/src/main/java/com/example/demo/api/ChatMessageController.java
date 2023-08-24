@@ -4,6 +4,7 @@ import com.example.demo.application.AttachmentService;
 import com.example.demo.application.ChatMessageService;
 import com.example.demo.application.MemberService;
 import com.example.demo.dto.chat.ChatMessageDto;
+import com.example.demo.dto.chat.ChatMessageResponseDto;
 import com.example.demo.exception.RequestNotAuthorizedException;
 import com.example.demo.exception.WrongMemberEntryException;
 import io.swagger.v3.oas.annotations.Operation;
@@ -34,8 +35,8 @@ public class ChatMessageController { // /chatmessages/getchatmessages/{destinati
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<List<ChatMessageDto>> getLatestChatMessages(@AuthenticationPrincipal OAuth2User principal, @PathVariable String destination, @PathVariable int amount) throws WrongMemberEntryException, RequestNotAuthorizedException {
-        List<ChatMessageDto> chatMessages = chatMessageService.getLatestChatMessages(memberService.getMember(principal), destination, amount);
+    public ResponseEntity<List<ChatMessageResponseDto>> getLatestChatMessages(@AuthenticationPrincipal OAuth2User principal, @PathVariable String destination, @PathVariable int amount) throws RequestNotAuthorizedException {
+        List<ChatMessageResponseDto> chatMessages = chatMessageService.getLatestChatMessages(memberService.getMember(principal), destination, amount);
         return new ResponseEntity<>(chatMessages, HttpStatus.OK);
     }
 // /chatmessages/uploadfile"

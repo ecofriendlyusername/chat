@@ -35,7 +35,7 @@ public class ChatController {
 
         webSocketChatMessage.setSender(memberEmail);
 
-        chatMessageService.saveMessage(webSocketChatMessage, memberEmail, destination);
+        chatMessageService.saveMessage(webSocketChatMessage, memberEmail);
 
         stompMessageService.sendStompMessage(destination, webSocketChatMessage);
     }

@@ -1,6 +1,7 @@
 package com.example.demo.application;
 
 import com.example.demo.dto.chat.ChatMessageDto;
+import com.example.demo.dto.chat.ChatMessageResponseDto;
 import com.example.demo.entity.ChatMessage;
 import com.example.demo.entity.ChatRoom;
 import com.example.demo.entity.Member;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @Service
@@ -25,11 +27,14 @@ public class ChatMessageService {
     private final ChatMessageRepository chatMessageRepository;
 
     private final MemberInChatRoomRepository memberInChatRoomRepository;
-    public void saveMessage(ChatMessageDto webSocketChatMessage, String email, String destination) {
-        ChatRoom chatRoom = chatRoomRepository.findByDestination(destination);
-
+    public void saveMessage(ChatMessageDto webSocketChatMessage, String email) {
+        Optional<ChatRoom> optionalChatRoom = chatRoomRepository.findById(webSocketChatMessage.getChatRoomId());
+        if (optionalChatRoom.isEmpty()) {
+            System.out.println("chat room doesn't exist");
+            return;
+        }
+        ChatRoom chatRoom = optionalChatRoom.get();
         ChatMessage chatMessage = ChatMessage.builder()
-//                .member(member)
                 .sender(email)
                 .chatRoom(chatRoom)
                 .type(webSocketChatMessage.getType())
@@ -39,7 +44,7 @@ public class ChatMessageService {
         chatMessageRepository.save(chatMessage);
     }
 
-    public List<ChatMessageDto> getLatestChatMessages(Member member, String destination, int amount) throws RequestNotAuthorizedException {
+    public List<ChatMessageResponseDto> getLatestChatMessages(Member member, String destination, int amount) throws RequestNotAuthorizedException {
         ChatRoom chatRoom = chatRoomRepository.findByDestination(destination);
 
         if (!memberInChatRoomRepository.existsByMemberAndChatRoom(member, chatRoom)) {
@@ -48,19 +53,15 @@ public class ChatMessageService {
 
         List<ChatMessage> chatMessages = chatMessageRepository.findAllByChatRoomOrderByTimeStampDesc(chatRoom, PageRequest.of(0, amount));
 
-        return convertToChatMessageDtoList(chatMessages);
-    }
-
-    private List<ChatMessageDto> convertToChatMessageDtoList(List<ChatMessage> chatMessages) {
-        List<ChatMessageDto> chatMessageDtos = new ArrayList<>();
+        List<ChatMessageResponseDto> chatMessageResponseDtos = new ArrayList<>();
         for (ChatMessage chatMessage : chatMessages) {
-            ChatMessageDto chatMessageDto = ChatMessageDto.builder()
+            ChatMessageResponseDto chatMessageResponseDto = ChatMessageResponseDto.builder()
                     .id(chatMessage.getId())
                     .content(chatMessage.getContent())
                     .type(chatMessage.getType())
                     .sender(chatMessage.getSender()).build();
-            chatMessageDtos.add(chatMessageDto);
+            chatMessageResponseDtos.add(chatMessageResponseDto);
         }
-        return chatMessageDtos;
+        return chatMessageResponseDtos;
     }
 }
