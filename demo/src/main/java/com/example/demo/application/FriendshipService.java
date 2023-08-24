@@ -1,6 +1,7 @@
 package com.example.demo.application;
 
-import com.example.demo.dto.FriendRequestDto;
+import com.example.demo.dto.friend.FriendDto;
+import com.example.demo.dto.friend.FriendRequestDto;
 import com.example.demo.dto.ResponseToFriendRequestDto;
 import com.example.demo.dto.notification.FriendRequestNotification;
 import com.example.demo.entity.FriendRequest;
@@ -14,6 +15,8 @@ import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Optional;
 
 @Service
@@ -24,8 +27,6 @@ public class FriendshipService {
     private final StompMessageService stompMessageService;
 
     private final FriendRequestRepository friendRequestRepository;
-
-    private final MainChannelService mainChannelService;
 
     private final FriendshipRepository friendshipRepository;
     public void processFriendRequest(Member from, FriendRequestDto friendRequestDto) throws BadRequestException {
@@ -93,5 +94,39 @@ public class FriendshipService {
                 .build();
 
         friendshipRepository.save(friendship);
+    }
+
+    public List<FriendDto> getFriends(Member member) {
+        List<Friendship> friendships1 = friendshipRepository.findAllByMemberOne(member);
+        List<Friendship> friendships2 = friendshipRepository.findAllByMemberTwo(member);
+
+        List<FriendDto> friendDtos = new ArrayList<>();
+
+        for (Friendship friendship : friendships1) {
+            Member friend = friendship.getOther(member);
+            FriendDto friendDto = converMemberToFriendDto(friend);
+            friendDtos.add(friendDto);
+        }
+
+        for (Friendship friendship : friendships2) {
+            Member friend = friendship.getOther(member);
+            FriendDto friendDto = converMemberToFriendDto(friend);
+            friendDtos.add(friendDto);
+        }
+
+        return friendDtos;
+    }
+
+    public FriendDto converMemberToFriendDto(Member member) {
+        FriendDto friendDto = FriendDto.builder()
+                .id(member.getId())
+                .dmDestination(null) // change later
+                .dmChatRoomId(null) // change later
+                .email(member.getEmail())
+                .pfpFileName(null) // change later
+                .name(member.getName())
+        .build();
+
+        return friendDto;
     }
 }

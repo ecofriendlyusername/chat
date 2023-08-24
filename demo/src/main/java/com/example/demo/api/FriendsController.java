@@ -3,7 +3,8 @@ package com.example.demo.api;
 
 import com.example.demo.application.FriendshipService;
 import com.example.demo.application.MemberService;
-import com.example.demo.dto.FriendRequestDto;
+import com.example.demo.dto.friend.FriendDto;
+import com.example.demo.dto.friend.FriendRequestDto;
 import com.example.demo.dto.ResponseToFriendRequestDto;
 import com.example.demo.entity.Member;
 import com.example.demo.exception.BadRequestException;
@@ -16,6 +17,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+
+import java.util.List;
 
 @RestController
 @RequestMapping("/friends")
@@ -42,6 +45,19 @@ public class FriendsController {
         }
 
         return new ResponseEntity<>(SUCCESS, HttpStatus.OK);
+    }
+
+    // /friends/friends
+
+    @GetMapping("/friends")
+    @Operation(summary = "친구 리스트 가져오기", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<List<FriendDto>> getFriends(@AuthenticationPrincipal OAuth2User principal) {
+        Member member = memberService.getMember(principal);
+        List<FriendDto> friends = friendshipService.getFriends(member);
+        return new ResponseEntity<>(friends, HttpStatus.OK);
     }
 
 

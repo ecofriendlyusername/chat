@@ -1,4 +1,4 @@
-package com.example.demo.dto;
+package com.example.demo.dto.friend;
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
