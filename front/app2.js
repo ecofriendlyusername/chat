@@ -340,6 +340,10 @@ function openNewChatRoom(chatroom) { // open a new chat room (subscribe & receiv
     buttonElement.textContent = "채팅 보내기";
     // 채팅 보내는 버튼 
 
+    var leaveButton = document.createElement("button");
+    leaveButton.id = destination + '-leave-button'
+    leaveButton.textContent = "채팅방 나가기";
+
     const textBox = document.createElement("div");
     textBox.id = destination + '-textBox';
     // 채팅 내용이 들어갈 박스 
@@ -373,6 +377,7 @@ function openNewChatRoom(chatroom) { // open a new chat room (subscribe & receiv
     channelDiv.appendChild(fileInputElement);
     channelDiv.appendChild(showInputButton);
     channelDiv.appendChild(textBox);
+    channelDiv.appendChild(leaveButton);
 
     document.querySelector("#chatrooms").appendChild(channelDiv);
 
@@ -403,9 +408,13 @@ function openNewChatRoom(chatroom) { // open a new chat room (subscribe & receiv
         sendMessage(inputElement.id, destination);
     });
 
-    stompClient.subscribe('/topic/'+destination, (message) => {
+    const subscription = stompClient.subscribe('/topic/'+destination, (message) => {
         const messageBody = JSON.parse(message.body); // Assuming the message is in JSON format
         console.log(messageBody['content'])
         displayMessage(textBox.id, messageBody);
+    });
+
+    leaveButton.addEventListener("click", () => {
+        subscription.unsubscribe()
     });
 }
