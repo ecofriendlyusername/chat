@@ -14,13 +14,12 @@ public class MemberInfoResponseDto {
     String name;
 
     public static MemberInfoResponseDto converMemberToMemberInfoResponseDto(Member member) {
-        MemberInfoResponseDto memberInfoResponseDto = MemberInfoResponseDto.builder()
+        return MemberInfoResponseDto.builder()
                 .id(member.getId())
                 .email(member.getEmail())
                 .name(member.getName())
                 .pfpFileName(null)
                 .build();
-        return memberInfoResponseDto;
     }
 
     @Builder

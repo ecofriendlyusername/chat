@@ -27,7 +27,6 @@ public class ChatMessage {
 
     @Builder
     ChatMessage(String sender, ChatRoom chatRoom, String content, String type) {
-//        this.member = member;
         this.chatRoom = chatRoom;
         this.sender = sender;
         this.content = content;

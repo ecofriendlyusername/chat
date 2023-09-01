@@ -1,10 +1,9 @@
 package com.example.demo.api;
 
-
-import com.example.demo.application.ChatRoomService;
 import com.example.demo.application.GatheringService;
-import com.example.demo.application.MainChannelService;
 import com.example.demo.application.MemberService;
+import com.example.demo.dto.gathering.ChatRoomInGatheringCreationRequestDto;
+import com.example.demo.dto.gathering.ChatRoomSimpleDto;
 import com.example.demo.dto.gathering.GatheringCreationRequestDto;
 import com.example.demo.dto.gathering.GatheringResponseDto;
 import com.example.demo.entity.Member;
@@ -23,14 +22,12 @@ import java.util.List;
 @RequestMapping("/gathering")
 @RequiredArgsConstructor
 public class GatheringController {
-    private final ChatRoomService chatRoomService;
     private final GatheringService gatheringService;
-    private final MainChannelService mainChannelService;
 
     private final MemberService memberService;
 
     @GetMapping("/alluserchatrooms")
-    @Operation(summary = "로그인 되어있는 유저가 속한 모든 채팅방을 가져옴", description = "..."
+    @Operation(summary = "로그인 되어있는 유저가 속한 모든 모임을 가져옴", description = "..."
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
@@ -40,14 +37,25 @@ public class GatheringController {
         return new ResponseEntity<>(gatherings, HttpStatus.OK);
     }
 
-    @PostMapping("/makegathering")
-    @Operation(summary = "채팅방을 만듬. invitees에 초대하려는 유저들 이메일 넣어주세요", description = "..."
+    @PostMapping("/makechatroom/{gatheringId}")
+    @Operation(summary = "모임에 채팅방을 만듬. ", description = "..."
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<Long> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestBody GatheringCreationRequestDto gathering) {
-        Member member =memberService.getMember(principal);
-        Long gatheringId = gatheringService.makeAGathering(gathering, member);
-        return new ResponseEntity<>(gatheringId, HttpStatus.OK);
+    public ResponseEntity<ChatRoomSimpleDto> makeAChatRoomInGathering(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long gatheringId, @RequestBody ChatRoomInGatheringCreationRequestDto chatRoom) {
+        Member member = memberService.getMember(principal);
+        ChatRoomSimpleDto chatRoomCreated = gatheringService.makeAChatRoom(chatRoom, gatheringId, member);
+        return new ResponseEntity<>(chatRoomCreated, HttpStatus.OK);
+    }
+
+    @PostMapping("/makegathering")
+    @Operation(summary = "모임 생성", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<GatheringResponseDto> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestBody GatheringCreationRequestDto gathering) {
+        Member member = memberService.getMember(principal);
+        GatheringResponseDto createdGathering = gatheringService.makeAGathering(gathering, member);
+        return new ResponseEntity<>(createdGathering, HttpStatus.OK);
     }
 }

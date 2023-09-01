@@ -22,7 +22,7 @@ public class MainChannelService {
         List<String> mainChannelDestinations = getMainChannels(invitees);
 
         RoomInvitationNotification invitation = RoomInvitationNotification.builder()
-                .type(NotificationType.FRIEND_REQUEST)
+                .type(NotificationType.INVITATION)
                 .chatRoomId(chatRoom.getId())
                 .destination(chatRoom.getDestination())
                 .build();

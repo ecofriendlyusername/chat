@@ -1,6 +1,7 @@
 package com.example.demo.entity;
 
 import jakarta.persistence.*;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -19,4 +20,10 @@ public class ChatRoomInGathering {
 
     @ManyToOne
     ChatRoom chatRoom;
+
+    @Builder
+    ChatRoomInGathering(Gathering gathering, ChatRoom chatRoom) {
+        this.gathering = gathering;
+        this.chatRoom = chatRoom;
+    }
 }

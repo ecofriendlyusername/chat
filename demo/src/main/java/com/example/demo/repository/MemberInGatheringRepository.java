@@ -8,4 +8,6 @@ import java.util.List;
 
 public interface MemberInGatheringRepository extends JpaRepository<MemberInGathering, Long> {
     List<MemberInGathering> findAllByMember(Member member);
+
+    List<MemberInGathering> findByMember(Member member);
 }

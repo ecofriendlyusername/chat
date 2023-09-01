@@ -1,6 +1,5 @@
 package com.example.demo.dto.friend;
 
-import com.example.demo.entity.FriendRequest;
 import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
