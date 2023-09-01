@@ -6,23 +6,22 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import java.util.List;
-
 @Entity
 @NoArgsConstructor
 @Setter
 @Getter
-public class ChatRoom {
+public class Gathering {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @OneToMany(mappedBy = "chatRoom", fetch = FetchType.LAZY)
-    private List<ChatMessage> chatMessages;
-    private String destination;
+    @ManyToOne
+    private Member member;
+
+    private String gatheringName;
 
     @Builder
-    ChatRoom(String destination) {
-        this.destination = destination;
+    Gathering(String gatheringName) {
+        this.gatheringName = gatheringName;
     }
 }

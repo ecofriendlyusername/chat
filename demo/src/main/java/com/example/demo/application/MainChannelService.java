@@ -3,6 +3,7 @@ package com.example.demo.application;
 import com.example.demo.dto.notification.RoomInvitationNotification;
 import com.example.demo.entity.ChatRoom;
 import com.example.demo.entity.Member;
+import com.example.demo.enums.NotificationType;
 import com.example.demo.repository.MemberRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -21,7 +22,7 @@ public class MainChannelService {
         List<String> mainChannelDestinations = getMainChannels(invitees);
 
         RoomInvitationNotification invitation = RoomInvitationNotification.builder()
-                .type("INVITATION")
+                .type(NotificationType.FRIEND_REQUEST)
                 .chatRoomId(chatRoom.getId())
                 .destination(chatRoom.getDestination())
                 .build();

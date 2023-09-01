@@ -3,9 +3,7 @@ package com.example.demo.application;
 import com.example.demo.dto.chat.ChatRoomInvitationRequestDto;
 import com.example.demo.dto.chat.ChatRoomRequestDto;
 import com.example.demo.dto.chat.ChatRoomResponseDto;
-import com.example.demo.entity.ChatRoom;
-import com.example.demo.entity.Member;
-import com.example.demo.entity.MemberInChatRoom;
+import com.example.demo.entity.*;
 import com.example.demo.repository.ChatRoomRepository;
 import com.example.demo.repository.MemberRepository;
 import com.example.demo.repository.MemberInChatRoomRepository;
@@ -28,7 +26,6 @@ public class ChatRoomService {
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .destination(destination)
-                .roomName(chatRoomRequestDto.getRoomName())
                 .build();
 
         List<String> invitees = chatRoomRequestDto.getInvitees();
@@ -62,17 +59,16 @@ public class ChatRoomService {
     }
 
     public ChatRoomResponseDto convertToChatRoomResponseDto(ChatRoom chatRoom) {
-        List<MemberInChatRoom> memberInChatRooms = memberInChatRoomRepository.findByChatRoom(chatRoom);
+        List<MemberInChatRoom> memberInDirectChatRooms = memberInChatRoomRepository.findByChatRoom(chatRoom);
 
         List<String> memberEmails = new ArrayList<>();
-        for (MemberInChatRoom memberInChatRoom : memberInChatRooms) {
+        for (MemberInChatRoom memberInChatRoom : memberInDirectChatRooms) {
             Member member = memberInChatRoom.getMember();
             memberEmails.add(member.getEmail());
         }
         ChatRoomResponseDto itemMatchResponsePageDto = ChatRoomResponseDto.builder()
                 .destination(chatRoom.getDestination())
                 .memberEmails(memberEmails)
-                .roomName(chatRoom.getRoomName())
                 .id(chatRoom.getId())
                 .build();
 
@@ -101,12 +97,12 @@ public class ChatRoomService {
             Member member = memberRepository.findByEmail(memberEmail);
             if (member == null) continue;
 
-            MemberInChatRoom memberInChatRoom = MemberInChatRoom.builder()
+            MemberInChatRoom memberInDirectChatRoom = MemberInChatRoom.builder()
                     .chatRoom(chatRoom)
                     .member(member)
                     .build();
 
-            memberInChatRoomRepository.save(memberInChatRoom);
+            memberInChatRoomRepository.save(memberInDirectChatRoom);
 //            chatRoomRepository.save(chatRoom);
 //            memberRepository.save(member);
         }
@@ -115,4 +111,6 @@ public class ChatRoomService {
     public ChatRoomResponseDto fetchAllChatOneRoom(String email) {
         return null;
     }
+
+
 }
