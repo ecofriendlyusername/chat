@@ -27,13 +27,5 @@ public class WebSocketChatEventListener {
 
     @EventListener
     public void handleWebSocketDisconnectListener(SessionDisconnectEvent event) {
-//        StompHeaderAccessor headerAccessor = StompHeaderAccessor.wrap(event.getMessage());
-//        String username = (String) headerAccessor.getSessionAttributes().get("username");
-//        if (username != null) {
-//            ChatMessageDto chatMessage = new ChatMessageDto();
-//            chatMessage.setType("Leave");
-//            chatMessage.setSender(username);
-//            messagingTemplate.convertAndSend("/topic/public", chatMessage);
-//        }
     }
 }

@@ -1,7 +1,6 @@
 package com.example.demo.api;
 
 import com.example.demo.application.ChatMessageService;
-import com.example.demo.application.MemberService;
 import com.example.demo.application.StompMessageService;
 import com.example.demo.dto.chat.ChatMessageDto;
 import io.swagger.v3.oas.annotations.Operation;

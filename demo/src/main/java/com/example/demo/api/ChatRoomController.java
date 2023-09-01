@@ -2,10 +2,13 @@ package com.example.demo.api;
 
 import com.example.demo.application.ChatRoomService;
 import com.example.demo.application.MainChannelService;
+import com.example.demo.application.MemberService;
 import com.example.demo.dto.chat.ChatRoomInvitationRequestDto;
 import com.example.demo.dto.chat.ChatRoomRequestDto;
 import com.example.demo.dto.chat.ChatRoomResponseDto;
+import com.example.demo.dto.gathering.GatheringWithRoomsDto;
 import com.example.demo.entity.ChatRoom;
+import com.example.demo.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,8 @@ public class ChatRoomController {
     private static final String SUCCESS = "SUCCESS";
     private static final String FAIL = "FAIL";
     private final ChatRoomService chatRoomService;
+
+    private final MemberService memberService;
     private final MainChannelService mainChannelService;
 
     @GetMapping("/alluserchatrooms")
@@ -36,6 +41,17 @@ public class ChatRoomController {
         String email = principal.getAttribute("email");
         List<ChatRoomResponseDto> chatRoomResponseDtos = chatRoomService.fetchAllChatRooms(email);
         return new ResponseEntity<>(chatRoomResponseDtos, HttpStatus.OK);
+    }
+
+    @GetMapping("/chatroomsbygathering")
+    @Operation(summary = "모임별로 채팅방들을 가져온다. 모임명이 null인 경우 어떤 모임에도 속하지 않은 채팅방(DM 같은거라고 보면됨)", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<List<GatheringWithRoomsDto>> getGatheringsChatRooms(@AuthenticationPrincipal OAuth2User principal) {
+        Member member = memberService.getMember(principal);
+        List<GatheringWithRoomsDto> chatRoomsByGatherings = chatRoomService.fetchAllChatRoomsByGatherings(member);
+        return new ResponseEntity<>(chatRoomsByGatherings, HttpStatus.OK);
     }
 
     @GetMapping("/onechatroom/{id}")
