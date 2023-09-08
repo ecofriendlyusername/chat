@@ -1,0 +1,22 @@
+.modal {
+    width: 27vw;
+    height: 70vh;
+    background-color: #ECDCD3;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    border-radius: 30px;
+
+  }
+  
+.container {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0,0.7); 
+    z-index: 100;
+  }
+  
