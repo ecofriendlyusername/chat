@@ -8,6 +8,7 @@ import com.example.demo.dto.notification.FriendRequestNotification;
 import com.example.demo.entity.FriendRequest;
 import com.example.demo.entity.Friendship;
 import com.example.demo.entity.Member;
+import com.example.demo.enums.NotificationType;
 import com.example.demo.exception.BadRequestException;
 import com.example.demo.exception.RequestNotAuthorizedException;
 import com.example.demo.repository.FriendRequestRepository;
@@ -60,7 +61,7 @@ public class FriendshipService {
         String mainChannelDestination = to.getMainChannelDestination();
 
         FriendRequestNotification invitation = FriendRequestNotification.builder()
-                .type("FRIEND_REQUEST")
+                .type(NotificationType.FRIEND_REQUEST)
                 .friendRequestId(friendRequest.getId())
                 .helloMessage(helloMessage)
                 .from(from.getEmail())

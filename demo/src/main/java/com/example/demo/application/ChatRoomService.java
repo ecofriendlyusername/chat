@@ -3,12 +3,10 @@ package com.example.demo.application;
 import com.example.demo.dto.chat.ChatRoomInvitationRequestDto;
 import com.example.demo.dto.chat.ChatRoomRequestDto;
 import com.example.demo.dto.chat.ChatRoomResponseDto;
-import com.example.demo.entity.ChatRoom;
-import com.example.demo.entity.Member;
-import com.example.demo.entity.MemberInChatRoom;
-import com.example.demo.repository.ChatRoomRepository;
-import com.example.demo.repository.MemberRepository;
-import com.example.demo.repository.MemberInChatRoomRepository;
+import com.example.demo.dto.gathering.ChatRoomSimpleDto;
+import com.example.demo.dto.gathering.GatheringWithRoomsDto;
+import com.example.demo.entity.*;
+import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 
@@ -21,14 +19,14 @@ public class ChatRoomService {
     private final MemberRepository memberRepository;
     private final ChatRoomRepository chatRoomRepository;
 
+    private final MemberInGatheringRepository memberInGatheringRepository;
     private final MemberInChatRoomRepository memberInChatRoomRepository;
-
+    private final ChatRoomInGatheringRepository chatRoomInGatheringRepository;
     public ChatRoom makeAChatRoom(ChatRoomRequestDto chatRoomRequestDto, String roomMakerEmail) {
         String destination = "chat-" + UUID.randomUUID();
 
         ChatRoom chatRoom = ChatRoom.builder()
                 .destination(destination)
-                .roomName(chatRoomRequestDto.getRoomName())
                 .build();
 
         List<String> invitees = chatRoomRequestDto.getInvitees();
@@ -62,17 +60,16 @@ public class ChatRoomService {
     }
 
     public ChatRoomResponseDto convertToChatRoomResponseDto(ChatRoom chatRoom) {
-        List<MemberInChatRoom> memberInChatRooms = memberInChatRoomRepository.findByChatRoom(chatRoom);
+        List<MemberInChatRoom> memberInDirectChatRooms = memberInChatRoomRepository.findByChatRoom(chatRoom);
 
         List<String> memberEmails = new ArrayList<>();
-        for (MemberInChatRoom memberInChatRoom : memberInChatRooms) {
+        for (MemberInChatRoom memberInChatRoom : memberInDirectChatRooms) {
             Member member = memberInChatRoom.getMember();
             memberEmails.add(member.getEmail());
         }
         ChatRoomResponseDto itemMatchResponsePageDto = ChatRoomResponseDto.builder()
                 .destination(chatRoom.getDestination())
                 .memberEmails(memberEmails)
-                .roomName(chatRoom.getRoomName())
                 .id(chatRoom.getId())
                 .build();
 
@@ -101,18 +98,35 @@ public class ChatRoomService {
             Member member = memberRepository.findByEmail(memberEmail);
             if (member == null) continue;
 
-            MemberInChatRoom memberInChatRoom = MemberInChatRoom.builder()
+            MemberInChatRoom memberInDirectChatRoom = MemberInChatRoom.builder()
                     .chatRoom(chatRoom)
                     .member(member)
                     .build();
 
-            memberInChatRoomRepository.save(memberInChatRoom);
-//            chatRoomRepository.save(chatRoom);
-//            memberRepository.save(member);
+            memberInChatRoomRepository.save(memberInDirectChatRoom);
         }
     }
 
     public ChatRoomResponseDto fetchAllChatOneRoom(String email) {
         return null;
+    }
+
+
+    public List<GatheringWithRoomsDto> fetchAllChatRoomsByGatherings(Member member) {
+        List<MemberInGathering> memberInGatherings = memberInGatheringRepository.findByMember(member);
+
+        List<GatheringWithRoomsDto> gatheringWithRoomsDtos = new ArrayList<>();
+
+        for (MemberInGathering memberInGathering : memberInGatherings) {
+            Gathering gathering = memberInGathering.getGathering();
+            List<ChatRoomInGathering> chatRoomInGatherings = chatRoomInGatheringRepository.findByGathering(gathering);
+            List<ChatRoomSimpleDto> chatRoomSimpleDtos = new ArrayList<>();
+            for (ChatRoomInGathering chatRoomInGathering : chatRoomInGatherings) {
+                chatRoomSimpleDtos.add(ChatRoomSimpleDto.convertChatRoomToChatRoomSimpleDto(chatRoomInGathering.getChatRoom()));
+            }
+            gatheringWithRoomsDtos.add(GatheringWithRoomsDto.builder().gatheringId(gathering.getId()).gatheringName(gathering.getGatheringName()).chatRooms(chatRoomSimpleDtos).voiceRooms(null).build());
+        }
+
+        return gatheringWithRoomsDtos;
     }
 }

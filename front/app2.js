@@ -7,6 +7,9 @@ var mainchannel = null;
 document.getElementById("myButton").addEventListener("click", connect, true)
 document.getElementById("invitationButton").addEventListener("click", makeAChatRoom, true)
 document.getElementById("friend-request-button").addEventListener("click", makeAFriendRequest, true)
+document.getElementById("make-gathering").addEventListener("click", makeGathering, true)
+// document.getElementById("make-chatroom-in-gathering").addEventListener("click", makeChatRoomInGathering, true)
+
 
 var name = null;
 async function connect(event) {
@@ -115,6 +118,49 @@ function makeAFriendRequest() {
     });
 }
 
+async function makeChatRoomInGathering(gatheringId) {
+    const chatRoom = {
+        chatRoomName: 'hello chatroom'
+    }
+
+    await fetch(baseurl + "/gathering/makechatroom/" + gatheringId, {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(chatRoom)
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log(data)
+    })
+    .catch(error => {
+        console.error('Error fetching string:', error);
+    });
+}
+
+async function makeGathering() {
+    const gathering = {
+        gatheringName: 'my first gathering'
+    }
+    await fetch(baseurl + "/gathering/makegathering", {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gathering)
+    })
+    .then(response => response.json())
+    .then(data => {
+        makeChatRoomInGathering(data['gatheringId'])
+    })
+    .catch(error => {
+        console.error('Error fetching string:', error);
+    });
+}
+
 function processFriendRequest(friendRequest) {
     // 여기선 그냥 자동으로 승낙하게 만들어둠 
     // 프론트에서 누구한테 왔는지 (friendRequest['from']), 인삿말 (friendRequest['helloMessage']) 유저한테 보내고 
@@ -129,6 +175,10 @@ function processFriendRequest(friendRequest) {
         friendRequestId,
         'accept': true
     }
+
+    console.log('friend request', friendRequest)
+
+    console.log(friendRequestId)
 
     fetch(baseurl + "/friends/handleresponsetofriendrequest", {
         method: 'post',
