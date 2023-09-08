@@ -9,7 +9,9 @@ import com.example.demo.enums.RoleInGathering;
 import com.example.demo.repository.*;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
@@ -29,8 +31,18 @@ public class GatheringService {
     private final ChatRoomInGatheringRepository chatRoomInGatheringRepository;
 
     private final MemberInGatheringRepository memberInGatheringRepository;
-    public GatheringResponseDto makeAGathering(GatheringCreationRequestDto gatheringCreationRequestDto, Member member) {
+
+    private final FileHandlingService fileHandlingService;
+
+    private final FileRepository fileRepository;
+    public GatheringResponseDto makeAGathering(MultipartFile gatheringImage, GatheringCreationRequestDto gatheringCreationRequestDto, Member member) throws IOException {
+        File file = File.builder()
+                .fileName(fileHandlingService.save(gatheringImage)).build();
+
+        fileRepository.save(file);
+
         Gathering gathering = Gathering.builder()
+                .gatheringImage(file)
                 .gatheringName(gatheringCreationRequestDto.getGatheringName())
                 .build();
 

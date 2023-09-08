@@ -5,6 +5,7 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import lombok.*;
+import lombok.experimental.SuperBuilder;
 
 @Entity
 @Getter
@@ -18,6 +19,7 @@ public class File {
 
     private String fileName;
 
+    @Builder
     File(String fileName) {
         this.fileName = fileName;
     }

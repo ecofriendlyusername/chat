@@ -15,9 +15,12 @@ public class Gathering {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
     private String gatheringName;
+    @OneToOne
+    private File gatheringImage;
 
     @Builder
-    Gathering(String gatheringName) {
+    Gathering(String gatheringName, File gatheringImage) {
+        this.gatheringImage = gatheringImage;
         this.gatheringName = gatheringName;
     }
 }
