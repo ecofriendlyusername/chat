@@ -15,7 +15,9 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
@@ -53,9 +55,9 @@ public class GatheringController {
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<GatheringResponseDto> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestBody GatheringCreationRequestDto gathering) {
+    public ResponseEntity<GatheringResponseDto> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestPart("gathering_image") MultipartFile gatheringImage, @RequestPart GatheringCreationRequestDto gathering) throws IOException {
         Member member = memberService.getMember(principal);
-        GatheringResponseDto createdGathering = gatheringService.makeAGathering(gathering, member);
+        GatheringResponseDto createdGathering = gatheringService.makeAGathering(gatheringImage, gathering, member);
         return new ResponseEntity<>(createdGathering, HttpStatus.OK);
     }
 }

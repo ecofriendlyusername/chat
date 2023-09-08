@@ -1,7 +1,7 @@
 package com.example.demo.api;
 
-import com.example.demo.application.AttachmentService;
 import com.example.demo.application.ChatMessageService;
+import com.example.demo.application.FileHandlingService;
 import com.example.demo.application.MemberService;
 import com.example.demo.dto.chat.ChatMessageResponseDto;
 import com.example.demo.exception.RequestNotAuthorizedException;
@@ -16,14 +16,16 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
 
+import java.io.IOException;
 import java.util.List;
 
 @RestController
 @RequestMapping("/chatmessages")
 @RequiredArgsConstructor
 public class ChatMessageController { // /chatmessages/getchatmessages/{destination}/{amount}
-    private final AttachmentService attachmentService;
     private final ChatMessageService chatMessageService;
+
+    private final FileHandlingService fileHandlingService;
 
     private final MemberService memberService;
 
@@ -43,8 +45,8 @@ public class ChatMessageController { // /chatmessages/getchatmessages/{destinati
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<String> uploadAttachmentForChat(@AuthenticationPrincipal OAuth2User principal, @RequestParam("attachment") MultipartFile attachment) {
-        String fileName = attachmentService.saveAttachment(attachment, principal);
+    public ResponseEntity<String> uploadAttachmentForChat(@AuthenticationPrincipal OAuth2User principal, @RequestParam("attachment") MultipartFile attachment) throws IOException {
+        String fileName = fileHandlingService.save(attachment);
         return ResponseEntity.ok(fileName);
     }
 // /chatmessages/getfile
@@ -54,7 +56,7 @@ public class ChatMessageController { // /chatmessages/getchatmessages/{destinati
             @ApiResponse(responseCode = "200", description = "success")
     })
     public ResponseEntity<FileSystemResource> getAttachmentForChat(@PathVariable String fileName) {
-        FileSystemResource fileSystemResource = attachmentService.fetchAttachment(fileName);
+        FileSystemResource fileSystemResource = fileHandlingService.loadData(fileName);
 
         return ResponseEntity.ok()
                 .header("Content-Disposition", "attachment; filename=" + fileSystemResource.getFilename())
