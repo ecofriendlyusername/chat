@@ -1,5 +1,5 @@
 import React from 'react';
 
 export default function Login() {
-  return <div>Login페이지</div>;
+  return <div>redirect 페이지로 이용할 예정</div>;
 }
