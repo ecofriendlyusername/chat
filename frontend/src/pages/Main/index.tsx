@@ -1,16 +1,14 @@
 import React, { useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 
 export default function Main() {
-  const [istoken, setIstoken] = useState(false);
-  useEffect(() => {
-    if (localStorage.getItem('accessToken')) {
-      setIstoken(true);
-    } else {
-      setIstoken(false);
-    }
-  }, []);
+  const [cookies, setCookie] = useCookies(['name']);
+  useEffect (() => {
+    console.log(cookies)
+    
+  },[])
 
-  if (!istoken)
+  if (cookies.name === null)
     return (
       <div>
         <a href="http://localhost:8081/oauth2/authorization/google">
@@ -21,6 +19,7 @@ export default function Main() {
 
   return (
     <div>
+      {cookies.name}
       <h1>main페이지</h1>
     </div>
   );
