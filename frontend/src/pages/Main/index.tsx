@@ -1,5 +1,6 @@
 import React from 'react';
+import Nav from './Nav';
 
 export default function Main() {
-  return <div>야야야야양</div>;
+  return <Nav></Nav>;
 }

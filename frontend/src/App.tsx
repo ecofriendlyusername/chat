@@ -9,7 +9,7 @@ import NotFound from './pages/NotFound';
 
 function App() {
   return (
-    <div>
+    <div className="bg-brand-beige w-[100vw] h-[100vh]">
       <Routes>
         <Route path="/" element={<Login />} />
         <Route path="/main" element={<Main />} />
