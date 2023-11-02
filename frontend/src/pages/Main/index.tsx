@@ -1,6 +1,12 @@
 import React from 'react';
 import Nav from './Nav';
+import MeetingList from './MeetingList';
 
 export default function Main() {
-  return <Nav></Nav>;
+  return (
+    <>
+      <Nav />
+      <MeetingList />
+    </>
+  );
 }

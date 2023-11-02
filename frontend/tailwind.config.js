@@ -11,6 +11,7 @@ module.exports = {
       colors: {
         'brand-beige': '#ECDCD3',
         'brand-pink': '#F4B2B2',
+        'brand-black': '#180F05',
       },
     },
   },

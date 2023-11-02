@@ -24,9 +24,9 @@ export default function Nav() {
             </p>
           </div>
         ))}
-        <BsPlusCircleFill size={90} className="opacity-70 ml-6 mt-2" />
+        <BsPlusCircleFill size={90} className="opacity-70 ml-4 mt-2" />
         <div className="flex ml-auto">
-          <div className="flex mr-6 flex-col">
+          <div className="flex mr-10 flex-col">
             <img src={Profile} className="h-[6rem]" alt="내 프로필" />
             <p className="text-center mt-1 font-CookieRun_Regular">나</p>
           </div>
