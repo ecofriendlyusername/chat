@@ -40,7 +40,7 @@ export default function MeetingList() {
           roomImage={meeting.roomImage}
         />
       ))}
-      <div className="bg-brand-black w-[25rem] h-[15rem] mx-auto mt-5 flex items-center justify-center rounded">
+      <div className="bg-brand-black w-[22vw] h-[25vh] mx-auto mt-5 flex items-center justify-center rounded">
         <AiOutlinePlus size={100} color="white" onClick={open} />
         {isOpen && <Modal close={close} />}
       </div>

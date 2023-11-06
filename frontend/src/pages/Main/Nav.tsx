@@ -18,7 +18,7 @@ export default function Nav() {
       <div className="flex">
         {users.map((user, index) => (
           <div className=" mx-6" key={index}>
-            <img src={user.src} className="h-[6rem]" alt="프로필 사진" />
+            <img src={user.src} className="h-[10vh]" alt="프로필 사진" />
             <p className="text-center mt-1 font-CookieRun_Regular">
               {user.name}
             </p>
@@ -27,7 +27,7 @@ export default function Nav() {
         <BsPlusCircleFill size={90} className="opacity-70 ml-4 mt-2" />
         <div className="flex ml-auto">
           <div className="flex mr-10 flex-col">
-            <img src={Profile} className="h-[6rem]" alt="내 프로필" />
+            <img src={Profile} className="h-[10vh]" alt="내 프로필" />
             <p className="text-center mt-1 font-CookieRun_Regular">나</p>
           </div>
         </div>
