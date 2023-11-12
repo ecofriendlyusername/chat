@@ -1,5 +1,5 @@
 import React from 'react';
-import Profile from '../../Images/profile.png';
+import Profile from '../Images/profile.png';
 import { BsPlusCircleFill } from 'react-icons/bs';
 
 export default function Nav() {
@@ -17,18 +17,18 @@ export default function Nav() {
     <div className="h-[13vh] w-[100vw] bg-brand-pink">
       <div className="flex">
         {users.map((user, index) => (
-          <div className=" mx-6" key={index}>
+          <div className="mx-6 " key={index}>
             <img src={user.src} className="h-[10vh]" alt="프로필 사진" />
-            <p className="text-center mt-1 font-CookieRun_Regular">
+            <p className="mt-1 text-center font-CookieRun_Regular">
               {user.name}
             </p>
           </div>
         ))}
-        <BsPlusCircleFill size={90} className="opacity-70 ml-4 mt-2" />
+        <BsPlusCircleFill size={90} className="mt-2 ml-4 opacity-70" />
         <div className="flex ml-auto">
-          <div className="flex mr-10 flex-col">
+          <div className="flex flex-col mr-10">
             <img src={Profile} className="h-[10vh]" alt="내 프로필" />
-            <p className="text-center mt-1 font-CookieRun_Regular">나</p>
+            <p className="mt-1 text-center font-CookieRun_Regular">나</p>
           </div>
         </div>
       </div>

@@ -12,6 +12,7 @@ module.exports = {
         'brand-beige': '#ECDCD3',
         'brand-pink': '#F4B2B2',
         'brand-black': '#180F05',
+        'sidebar-beige': '#DEC2B5',
       },
     },
   },
