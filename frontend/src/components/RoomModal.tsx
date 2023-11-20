@@ -1,5 +1,5 @@
 import React, { useRef, useState } from 'react';
-import styles from './Modal.module.css';
+import styles from './RoomModal.module.css';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsCameraFill } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
@@ -8,7 +8,7 @@ interface ModalProps {
   close: () => void;
 }
 
-export default function Modal({ close }: ModalProps) {
+export default function RoomModal({ close }: ModalProps) {
   const outside = useRef<HTMLDivElement>(null);
   const [isPublic, setIsPublic] = useState<boolean>(false); // 공개, 비공개
   return (
