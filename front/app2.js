@@ -7,7 +7,8 @@ var mainchannel = null;
 document.getElementById("myButton").addEventListener("click", connect, true)
 document.getElementById("invitationButton").addEventListener("click", makeAChatRoom, true)
 document.getElementById("friend-request-button").addEventListener("click", makeAFriendRequest, true)
-document.getElementById("make-gathering").addEventListener("click", makeGathering, true)
+// document.getElementById("make-gathering").addEventListener("click", makeGathering, true)
+document.getElementById("make-gathering").addEventListener("click", makeGatheringWithParticipants, true)
 // document.getElementById("make-chatroom-in-gathering").addEventListener("click", makeChatRoomInGathering, true)
 
 
@@ -145,6 +146,28 @@ async function makeGathering() {
         gatheringName: 'my first gathering'
     }
     await fetch(baseurl + "/gathering/makegathering", {
+        method: 'post',
+        credentials: 'include',
+        headers: {
+            "Content-Type": "application/json",
+        },
+        body: JSON.stringify(gathering)
+    })
+    .then(response => response.json())
+    .then(data => {
+        makeChatRoomInGathering(data['gatheringId'])
+    })
+    .catch(error => {
+        console.error('Error fetching string:', error);
+    });
+}
+
+async function makeGatheringWithParticipants() {
+    const gathering = {
+        gatheringName: 'my first gathering',
+        participants: ['strbrychscake@gmail.com','plain2024@gmail.com']
+    }
+    await fetch(baseurl + "/gathering/makegatheringwithemails", {
         method: 'post',
         credentials: 'include',
         headers: {
