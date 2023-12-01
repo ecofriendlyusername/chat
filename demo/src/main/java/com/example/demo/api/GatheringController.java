@@ -2,10 +2,7 @@ package com.example.demo.api;
 
 import com.example.demo.application.GatheringService;
 import com.example.demo.application.MemberService;
-import com.example.demo.dto.gathering.ChatRoomInGatheringCreationRequestDto;
-import com.example.demo.dto.gathering.ChatRoomSimpleDto;
-import com.example.demo.dto.gathering.GatheringCreationRequestDto;
-import com.example.demo.dto.gathering.GatheringResponseDto;
+import com.example.demo.dto.gathering.*;
 import com.example.demo.entity.Member;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
@@ -44,7 +41,7 @@ public class GatheringController {
             , responses = {
             @ApiResponse(responseCode = "200", description = "success")
     })
-    public ResponseEntity<ChatRoomSimpleDto> makeAChatRoomInGathering(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long gatheringId, @RequestBody ChatRoomInGatheringCreationRequestDto chatRoom) {
+    public ResponseEntity<ChatRoomSimpleDto> makeAChatRoomInGathering(@AuthenticationPrincipal OAuth2User principal, @PathVariable Long gatheringId, @RequestPart ChatRoomInGatheringCreationRequestDto chatRoom) {
         Member member = memberService.getMember(principal);
         ChatRoomSimpleDto chatRoomCreated = gatheringService.makeAChatRoom(chatRoom, gatheringId, member);
         return new ResponseEntity<>(chatRoomCreated, HttpStatus.OK);
@@ -58,6 +55,17 @@ public class GatheringController {
     public ResponseEntity<GatheringResponseDto> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestPart("gathering_image") MultipartFile gatheringImage, @RequestPart GatheringCreationRequestDto gathering) throws IOException {
         Member member = memberService.getMember(principal);
         GatheringResponseDto createdGathering = gatheringService.makeAGathering(gatheringImage, gathering, member);
+        return new ResponseEntity<>(createdGathering, HttpStatus.OK);
+    }
+
+    @PostMapping("/makegatheringwithemails")
+    @Operation(summary = "모임 생성, 초기 멤버들 이메일과 함께", description = "..."
+            , responses = {
+            @ApiResponse(responseCode = "200", description = "success")
+    })
+    public ResponseEntity<GatheringResponseDto> makeAGathering(@AuthenticationPrincipal OAuth2User principal, @RequestPart("gathering_image") MultipartFile gatheringImage, @RequestPart GatheringCreationRequestWithParticipantsDto gathering) throws IOException {
+        Member member = memberService.getMember(principal);
+        GatheringResponseDto createdGathering = gatheringService.makeAGatheringWithParticipants(gatheringImage, gathering, member);
         return new ResponseEntity<>(createdGathering, HttpStatus.OK);
     }
 }
