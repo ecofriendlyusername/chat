@@ -14,12 +14,12 @@
 //     heartbeatIncoming: 4000,
 //     heartbeatOutgoing: 4000,
 //   });
-  
+
 //   client.onConnect = function (frame:any) {
 //     // Do something, all subscribes must be done is this callback
 //     // This is needed because this will be executed after a (re)connect
 //   };
-  
+
 //   client.onStompError = function (frame:any) {
 //     // Will be invoked in case of error encountered at Broker
 //     // Bad login/passcode typically will cause an error
@@ -28,15 +28,10 @@
 //     console.log('Broker reported error: ' + frame.headers['message']);
 //     console.log('Additional details: ' + frame.body);
 //   };
-  
+
 //   client.activate();
 import React from 'react';
 
 export default function websocket() {
-  return (
-    <div>
-      
-    </div>
-  );
+  return <div></div>;
 }
-
