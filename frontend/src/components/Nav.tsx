@@ -1,8 +1,8 @@
 import React from 'react';
 import Profile from '../Images/profile.png';
 import { BsPlusCircleFill } from 'react-icons/bs';
-import FriendModal from '../../components/FriendModal';
-import useModal from '../../hooks/modals';
+import FriendModal from '../components/FriendModal';
+import useModal from '../hooks/modals';
 
 export default function Nav() {
   interface User {
@@ -34,7 +34,7 @@ export default function Nav() {
         {/* BsPlusCircleFill 아이콘이 클릭되면 isOpen이 true가 되어 FriendModal이 렌더링됨 */}
         <BsPlusCircleFill
           size={90}
-          className="opacity-70 ml-4 mt-2"
+          className="mt-2 ml-4 opacity-70"
           onClick={open}
         />
         {isOpen && <FriendModal close={close} />}

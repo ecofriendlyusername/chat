@@ -3,6 +3,7 @@ import styles from './RoomModal.module.css';
 import { AiOutlineClose } from 'react-icons/ai';
 import { BsCameraFill } from 'react-icons/bs';
 import { AiOutlinePlusCircle } from 'react-icons/ai';
+import axios from 'axios';
 
 interface ModalProps {
   close: () => void;
@@ -11,6 +12,54 @@ interface ModalProps {
 export default function RoomModal({ close }: ModalProps) {
   const outside = useRef<HTMLDivElement>(null);
   const [isPublic, setIsPublic] = useState<boolean>(false); // 공개, 비공개
+
+  const makeGatheringApi = async () => {
+    console.log(111111);
+    try {
+      const fileInput = document.getElementById(
+        'input-file',
+      ) as HTMLInputElement;
+      const gatheringTitle = (
+        document.getElementById('input-title') as HTMLInputElement
+      ).value;
+      const emailList = [];
+      emailList.push('cococo1622@gmail.com');
+      emailList.push('coco1622555@gmail.com');
+      const files = fileInput.files;
+      if (files && files.length > 0) {
+        const makeGatheringForm = new FormData();
+        makeGatheringForm.append('gathering_image', files[0]);
+        makeGatheringForm.append(
+          'gathering',
+          new Blob(
+            [
+              JSON.stringify({
+                gatheringName: gatheringTitle,
+                participants: emailList,
+              }),
+            ],
+            { type: 'application/json' },
+          ),
+        );
+
+        let res = await axios.post(
+          'http://localhost:8081/gathering/makegatheringwithemails',
+          makeGatheringForm,
+          {
+            headers: {
+              'Content-Type': 'multipart/form-data',
+            },
+            withCredentials: true,
+          },
+        );
+        return res;
+      }
+    } catch (err) {
+      console.log('[ERROR] makeGatheringApi');
+      throw err;
+    }
+  };
+
   return (
     <>
       <div
@@ -25,15 +74,16 @@ export default function RoomModal({ close }: ModalProps) {
         <div className={styles.modal}>
           <AiOutlineClose
             size={50}
-            className="flex ml-auto mr-5 mt-5"
+            className="flex mt-5 ml-auto mr-5"
             onClick={close}
           />
-          <div className="flex-col flex items-center justify-center">
-            <p className="font-CookieRun_Regular text-2xl">룸 만들기</p>
+          <div className="flex flex-col items-center justify-center">
+            <p className="text-2xl font-CookieRun_Regular">룸 만들기</p>
             <input
+              id="input-title"
               placeholder="룸이름을 입력하세요"
               style={{ width: '15vw', height: '4vh', borderRadius: '10px' }}
-              className="font-CookieRun_Regular flex-center mt-4"
+              className="mt-4 font-CookieRun_Regular flex-center"
             />
             <label
               htmlFor="input-file"
@@ -44,7 +94,7 @@ export default function RoomModal({ close }: ModalProps) {
                 marginTop: '15px',
                 zIndex: 1,
               }}
-              className="flex-col flex items-center justify-center"
+              className="flex flex-col items-center justify-center"
             >
               <BsCameraFill size="100" style={{ color: '#AB8E8E' }} />
               <input
@@ -91,12 +141,13 @@ export default function RoomModal({ close }: ModalProps) {
               </div>
             )}
 
-            <div
+            <button
               className="font-CookieRun_Regular w-[10vw] h-[5vh] flex items-center justify-center mr-[7vw] rounded-md"
               style={{ background: '#E7CFC4' }}
+              onClick={makeGatheringApi}
             >
               룸생성
-            </div>
+            </button>
           </div>
         </div>
       </div>
